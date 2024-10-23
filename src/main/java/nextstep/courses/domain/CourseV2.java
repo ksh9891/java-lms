@@ -35,6 +35,10 @@ public class CourseV2 {
             throw new IllegalArgumentException("코스에 강의 목록이 존재하지 않습니다.");
         }
 
+        if (cohort < 1) {
+            throw new IllegalArgumentException("기수는 최소 1이상이어야 합니다.");
+        }
+
         this.id = id;
         this.title = title;
         this.cohort = cohort;

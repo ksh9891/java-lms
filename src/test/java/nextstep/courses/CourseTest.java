@@ -15,4 +15,11 @@ public class CourseTest {
         assertThatIllegalArgumentException()
             .isThrownBy(() -> new CourseV2("TDD, 클린 코드 with Java", 40, Collections.emptyList()));
     }
+
+    @Test
+    @DisplayName("기수가 1보다 작은 수가 지정 되었다면 예외가 발생한다.")
+    void shouldThrowExceptionWhenCohortIsNotProvided() {
+        assertThatIllegalArgumentException()
+            .isThrownBy(() -> new CourseV2("TDD, 클린 코드 with Java", 0, Collections.emptyList()));
+    }
 }
