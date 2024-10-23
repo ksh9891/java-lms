@@ -22,7 +22,7 @@
   - 단, Service 클래스는 단위 테스트가 없어도 된다.
 ## 테스트 내용 정리
 ### Course
-- [ ] Session 이 없다면 Course 생성 시 예외가 발생한다.
+- [x] Session 이 없다면 Course 생성 시 예외가 발생한다.
 - [ ] 기수가 지정되지 않은 경우 예외가 발생한다.
 - [ ] 기수와 Session 을 포함한다면 Course 는 생성된다. 
 ### Session
