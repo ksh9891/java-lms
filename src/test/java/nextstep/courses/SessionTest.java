@@ -15,4 +15,14 @@ public class SessionTest {
         assertThatIllegalArgumentException()
             .isThrownBy(() -> new Session(LocalDate.now(), null));
     }
+
+    @Test
+    @DisplayName("종료일은 시작일 이전으로 설정이 불가능하다.")
+    void shouldNotAllowEndDateBeforeStartDate() {
+        final LocalDate startDate = LocalDate.of(2024, 12, 31);
+        final LocalDate endDate = LocalDate.of(2024, 1, 1);
+
+        assertThatIllegalArgumentException()
+            .isThrownBy(() -> new Session(startDate, endDate));
+    }
 }
