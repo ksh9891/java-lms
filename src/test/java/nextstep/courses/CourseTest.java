@@ -5,6 +5,7 @@ import nextstep.courses.domain.Session;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 
@@ -29,10 +30,11 @@ public class CourseTest {
     @Test
     @DisplayName("기수와 Session 을 포함한다면 Course 는 생성된다.")
     void shouldCreateCourseWhenCohortAndSessionAreProvided() {
+        final LocalDate startDate = LocalDate.of(2024, 5, 30);
+        final LocalDate endDate = LocalDate.of(2024, 10, 29);
+
         final CourseV2 courseV2 = new CourseV2("TDD, 클린 코드 with Java", 40, List.of(
-            new Session(),
-            new Session(),
-            new Session()
+            new Session(startDate, endDate)
         ));
 
         assertThat(courseV2).isNotNull();
