@@ -28,6 +28,6 @@ public class Session {
     }
 
     private boolean isRecruiting(final LocalDate applyDate) {
-        return sessionDateRange.isBetween(applyDate);
+        return sessionRecruitmentDateRange.isBetween(applyDate);
     }
 }
