@@ -9,10 +9,10 @@ import java.time.LocalDate;
 import static org.assertj.core.api.Assertions.*;
 
 public class SessionTest {
-    private static DateRange SESSION_DATE_RANGE = new DateRange(LocalDate.of(2024, 10, 1), LocalDate.of(2024, 10, 10));
-    private static DateRange RECURITMENT_DATE_RANGE = new DateRange(LocalDate.of(2024, 9, 1), LocalDate.of(2024, 9, 20));
-    private static LocalDate BEFORE_RECURITMENT_DATE = LocalDate.of(2024, 8, 30);
-    private static LocalDate INCLUDE_RECURITMENT_DATE = LocalDate.of(2024, 9, 20);
+    private static final DateRange SESSION_DATE_RANGE = new DateRange(LocalDate.of(2024, 10, 1), LocalDate.of(2024, 10, 10));
+    private static final DateRange RECURITMENT_DATE_RANGE = new DateRange(LocalDate.of(2024, 9, 1), LocalDate.of(2024, 9, 20));
+    private static final LocalDate BEFORE_RECURITMENT_DATE = LocalDate.of(2024, 8, 30);
+    private static final LocalDate INCLUDE_RECURITMENT_DATE = LocalDate.of(2024, 9, 20);
 
     @Test
     @DisplayName("Session 기간은 필수이다.")
