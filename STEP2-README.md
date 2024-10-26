@@ -49,6 +49,9 @@
 ### SessionRegistrant
 - [ ] Session 에 자리가 남아있다
 - [ ] Session 에 자리가 남아있지 않다.
+### Capacity
+- [x] 인원 제한이 있다면 true 를 반환한다.
+- [x] 인원 제한이 없다면 false 를 반환한다.
 ### Money
 - [x] 입력금액이 null 이면 예외가 발생한다.
 - [x] 입력금액이 음수이면 예외가 발생한다.
