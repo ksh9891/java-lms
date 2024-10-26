@@ -1,13 +1,12 @@
 package nextstep.courses.domain;
 
-import nextstep.courses.exception.SessionNotRecruitingException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.math.BigInteger;
 import java.time.LocalDate;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 public class SessionTest {
     private static final DateRange SESSION_DATE_RANGE = new DateRange(LocalDate.of(2024, 10, 1), LocalDate.of(2024, 10, 10));
@@ -30,24 +29,18 @@ public class SessionTest {
     }
 
     @Test
-    @DisplayName("Session 이 '모집중' 상태가 아니면 신청 시 예외가 발생한다.")
-    void shouldThrowExceptionWhenSessionIsNotInRecruitingStatus() {
+    @DisplayName("입력된 날짜가 모집기간 내에 포함되면 true 를 반환한다.")
+    void shouldReturnTrueWhenDateIsWithinRecruitmentPeriod() {
         final Session session = Session.freeSession(SESSION_DATE_RANGE, RECRUITMENT_DATE_RANGE);
 
-        assertThatThrownBy(() -> session.apply(BEFORE_RECRUITMENT_DATE, Money.of(BigInteger.valueOf(3))))
-            .isExactlyInstanceOf(SessionNotRecruitingException.class);
+        assertThat(session.isRecruiting(INCLUDE_RECRUITMENT_DATE)).isTrue();
     }
 
     @Test
-    @DisplayName("수강생이 결제한 금액과 수강료가 일치하지 않으면 예외가 발생한다.")
-    void shouldApplyWhenPaymentAmountMatchesTuitionFee() {
-        final Session session = Session.paidSession(
-            SESSION_DATE_RANGE,
-            RECRUITMENT_DATE_RANGE,
-            Money.of(BigInteger.valueOf(1000))
-        );
+    @DisplayName("입력된 날짜가 모집기간 내에 포함되지 않으면 false 를 반환한다.")
+    void shouldReturnFalseWhenDateIsOutsideRecruitmentPeriod() {
+        final Session session = Session.freeSession(SESSION_DATE_RANGE, RECRUITMENT_DATE_RANGE);
 
-        assertThatThrownBy(() -> session.apply(INCLUDE_RECRUITMENT_DATE, Money.of(BigInteger.valueOf(500))))
-            .isExactlyInstanceOf(SessionNotRecruitingException.class);
+        assertThat(session.isRecruiting(BEFORE_RECRUITMENT_DATE)).isFalse();
     }
 }

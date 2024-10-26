@@ -4,7 +4,7 @@ import java.math.BigInteger;
 import java.util.Objects;
 
 public class Money {
-    private static final Money ZERO = new Money(BigInteger.ZERO);
+    public static final Money ZERO = new Money(BigInteger.ZERO);
 
     private final BigInteger money;
 

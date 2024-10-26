@@ -18,4 +18,12 @@ public class Capacity {
     public boolean hasLimit() {
         return capacity != null;
     }
+
+    public boolean isFull(final int currentCapacity) {
+        if (this.capacity == null) {
+            return false;
+        }
+
+        return this.capacity == currentCapacity;
+    }
 }

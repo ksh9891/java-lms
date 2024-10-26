@@ -1,7 +1,5 @@
 package nextstep.courses.domain;
 
-import nextstep.courses.exception.SessionNotRecruitingException;
-
 import java.math.BigInteger;
 import java.time.LocalDate;
 
@@ -40,17 +38,11 @@ public class Session {
         return new Session(sessionDateRange, sessionRecruitmentDateRange, fee);
     }
 
-    public void apply(final LocalDate applyDate, final Money money) {
-        if (!isRecruiting(applyDate)) {
-            throw new SessionNotRecruitingException("모집 기간이 아닙니다.");
-        }
-
-        if (!fee.isEqualTo(money)) {
-            throw new SessionNotRecruitingException("수강료가 지불한 금액과 일치하지 않습니다.");
-        }
+    public boolean isEqualsFee(final Money fee) {
+        return this.fee.isEqualTo(fee);
     }
 
-    private boolean isRecruiting(final LocalDate applyDate) {
+    public boolean isRecruiting(final LocalDate applyDate) {
         return sessionRecruitmentDateRange.isBetween(applyDate);
     }
 }
