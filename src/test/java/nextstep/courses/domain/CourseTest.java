@@ -31,7 +31,7 @@ public class CourseTest {
         final DateRange dateRange = new DateRange(LocalDate.of(2024, 5, 30), LocalDate.of(2024, 10, 29));
 
         final CourseV2 courseV2 = new CourseV2("TDD, 클린 코드 with Java", 40, List.of(
-            new Session(dateRange, dateRange)
+            Session.freeSession(dateRange, dateRange)
         ));
 
         assertThat(courseV2).isNotNull();
