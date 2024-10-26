@@ -1,5 +1,9 @@
 package nextstep.courses.domain;
 
+import nextstep.courses.exception.SessionNotRecruitingException;
+
+import java.time.LocalDate;
+
 public class Session {
     private final DateRange sessionDateRange;
     private final DateRange sessionRecruitmentDateRange;
@@ -15,5 +19,15 @@ public class Session {
 
         this.sessionDateRange = sessionDateRange;
         this.sessionRecruitmentDateRange = sessionRecruitmentDateRange;
+    }
+
+    public void apply(final LocalDate applyDate) {
+        if (!isRecruiting(applyDate)) {
+            throw new SessionNotRecruitingException("모집 기간이 아닙니다.");
+        }
+    }
+
+    private boolean isRecruiting(final LocalDate applyDate) {
+        return sessionDateRange.isBetween(applyDate);
     }
 }
