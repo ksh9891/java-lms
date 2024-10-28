@@ -38,7 +38,7 @@
 - [x] 기간 내의 날짜가 입력되지 않으면 false 를 반환한다.
 - [x] 시작일과 동일한 날짜가 입력되면 true 를 반환한다.
 - [x] 종료일과 동일한 날짜가 입력되면 true 를 반환한다.
-### ImageProperties
+### ImageDimensions
 - [x] width 가 300px 미만이라면 예외가 발생한다.
 - [x] height 는 200px 미만이라면 예외가 발생한다.
 - [x] width 와 height 의 비율이 3:2 가 아니라면 예외가 발생한다.
