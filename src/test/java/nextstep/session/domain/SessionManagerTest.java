@@ -15,15 +15,14 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class SessionManagerTest {
     private static final DateRange SESSION_DATE_RANGE = new DateRange(LocalDate.of(2024, 10, 1), LocalDate.of(2024, 10, 10));
-    private static final DateRange RECRUITMENT_DATE_RANGE = new DateRange(LocalDate.of(2024, 9, 1), LocalDate.of(2024, 9, 20));
 
     private static final LocalDate BEFORE_RECRUITMENT_DATE = LocalDate.of(2024, 8, 30);
     private static final LocalDate INCLUDE_RECRUITMENT_DATE = LocalDate.of(2024, 9, 20);
 
     private static final Money PAID_FEE = Money.of(BigInteger.valueOf(1000));
 
-    private static final Session FREE_SESSION = Session.freeSession(SESSION_DATE_RANGE, RECRUITMENT_DATE_RANGE);
-    private static final Session PAID_SESSION = Session.paidSession(SESSION_DATE_RANGE, RECRUITMENT_DATE_RANGE, PAID_FEE);
+    private static final Session FREE_SESSION = Session.freeSession(SESSION_DATE_RANGE);
+    private static final Session PAID_SESSION = Session.paidSession(SESSION_DATE_RANGE, PAID_FEE);
 
     @Test
     @DisplayName("최대 수강 인원 제한이 없다.")

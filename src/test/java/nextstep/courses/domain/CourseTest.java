@@ -40,7 +40,7 @@ public class CourseTest {
             1L,
             LocalDateTime.now(),
             null,
-            List.of(Session.freeSession(dateRange, dateRange))
+            List.of(Session.freeSession(dateRange))
         );
 
         assertThat(course).isNotNull();
