@@ -1,4 +1,4 @@
-package nextstep.courses.domain;
+package nextstep.session.domain;
 
 import nextstep.courses.exception.SessionNotRecruitingException;
 import org.junit.jupiter.api.DisplayName;

@@ -1,4 +1,4 @@
-package nextstep.courses.domain;
+package nextstep.session.domain;
 
 public class ImageProperties {
     private final static int MINIMUM_WIDTH = 300;

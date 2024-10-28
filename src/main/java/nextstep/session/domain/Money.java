@@ -1,4 +1,4 @@
-package nextstep.courses.domain;
+package nextstep.session.domain;
 
 import java.math.BigInteger;
 import java.util.Objects;

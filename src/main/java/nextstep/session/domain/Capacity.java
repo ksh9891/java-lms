@@ -1,4 +1,4 @@
-package nextstep.courses.domain;
+package nextstep.session.domain;
 
 public class Capacity {
     private final Integer capacity;
