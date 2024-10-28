@@ -2,6 +2,7 @@ package nextstep.courses.domain;
 
 import nextstep.session.domain.DateRange;
 import nextstep.session.domain.Session;
+import nextstep.session.domain.SessionStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -40,7 +41,7 @@ public class CourseTest {
             1L,
             LocalDateTime.now(),
             null,
-            List.of(Session.freeSession(dateRange))
+            List.of(Session.freeSession(dateRange, SessionStatus.준비중))
         );
 
         assertThat(course).isNotNull();

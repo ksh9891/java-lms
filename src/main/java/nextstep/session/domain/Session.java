@@ -5,26 +5,27 @@ import nextstep.payments.domain.Payment;
 import nextstep.users.domain.NsUser;
 
 import java.math.BigInteger;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Session {
     private final SessionCoverImage sessionCoverImage;
     private final DateRange sessionDateRange;
+    private final SessionStatus sessionStatus;
     private final Money fee;
     private final Capacity capacity;
     private final List<NsUser> sessionUserList;
 
-    private Session(final DateRange sessionDateRange, final Money fee) {
-        this(sessionDateRange, fee, Capacity.noLimit());
+    private Session(final DateRange sessionDateRange, final SessionStatus sessionStatus, final Money fee) {
+        this(sessionDateRange, sessionStatus, fee, Capacity.noLimit());
     }
 
-    private Session(final DateRange sessionDateRange, final Money fee, final Capacity capacity) {
-        this(null, sessionDateRange, fee, capacity, new ArrayList<>());
+    private Session(final DateRange sessionDateRange, final SessionStatus sessionStatus, final Money fee, final Capacity capacity) {
+        this(null, sessionDateRange, sessionStatus, fee, capacity, new ArrayList<>());
     }
 
-    private Session(final SessionCoverImage sessionCoverImage, final DateRange sessionDateRange, final Money fee, final Capacity capacity, final List<NsUser> sessionUserList) {
+    private Session(final SessionCoverImage sessionCoverImage, final DateRange sessionDateRange, final SessionStatus sessionStatus, final Money fee, final Capacity capacity, final List<NsUser> sessionUserList) {
+        this.sessionStatus = sessionStatus;
         validationSession(sessionDateRange, fee);
 
         this.sessionCoverImage = sessionCoverImage;
@@ -44,32 +45,20 @@ public class Session {
         }
     }
 
-    public static Session freeSession(final DateRange sessionDateRange) {
-        return new Session(sessionDateRange, Money.of(BigInteger.ZERO));
+    public static Session freeSession(final DateRange sessionDateRange, final SessionStatus sessionStatus) {
+        return new Session(sessionDateRange, sessionStatus, Money.of(BigInteger.ZERO));
     }
 
-    public static Session paidSession(final DateRange sessionDateRange, final Money fee, final Capacity capacity) {
-        return new Session(sessionDateRange, fee, capacity);
+    public static Session paidSession(final DateRange sessionDateRange, final SessionStatus sessionStatus, final Money fee, final Capacity capacity) {
+        return new Session(sessionDateRange, sessionStatus, fee, capacity);
     }
 
-    public SessionStatus currentStatus(final LocalDate localDate) {
-        if (sessionDateRange.isBeforeStartDate(localDate)) {
-            return SessionStatus.준비중;
-        }
-
-        if (sessionDateRange.isBetween(localDate)) {
-            return SessionStatus.모집중;
-        }
-
-        return SessionStatus.종료;
+    public void apply(final NsUser sessionUser) {
+        apply(sessionUser, new Payment());
     }
 
-    public void apply(final LocalDate applyDate, final NsUser sessionUser) {
-        apply(applyDate, sessionUser, new Payment());
-    }
-
-    public void apply(final LocalDate applyDate, final NsUser sessionUser, final Payment payment) {
-        if (!isRecruiting(applyDate)) {
+    public void apply(final NsUser sessionUser, final Payment payment) {
+        if (!isRecruiting()) {
             throw new SessionNotRecruitingException("모집 기간이 아닙니다.");
         }
 
@@ -92,7 +81,7 @@ public class Session {
         return capacity.hasLimit();
     }
 
-    private boolean isRecruiting(final LocalDate applyDate) {
-        return currentStatus(applyDate).isRecruit();
+    private boolean isRecruiting() {
+        return sessionStatus.isRecruit();
     }
 }
