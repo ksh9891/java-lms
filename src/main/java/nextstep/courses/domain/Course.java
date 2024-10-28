@@ -1,11 +1,15 @@
 package nextstep.courses.domain;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Course {
     private Long id;
 
     private String title;
+
+    private int cohort;
 
     private Long creatorId;
 
@@ -13,19 +17,47 @@ public class Course {
 
     private LocalDateTime updatedAt;
 
+    private List<Session> sessionList;
+
     public Course() {
     }
 
-    public Course(String title, Long creatorId) {
+    public Course(final String title, final Long creatorId) {
         this(0L, title, creatorId, LocalDateTime.now(), null);
     }
 
-    public Course(Long id, String title, Long creatorId, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public Course(final Long id,
+                  final String title,
+                  final Long creatorId,
+                  final LocalDateTime createdAt,
+                  final LocalDateTime updatedAt
+    ) {
+        this(id, title, 1, creatorId, createdAt, updatedAt, new ArrayList<>());
+    }
+
+    public Course(final Long id,
+                  final String title,
+                  final int cohort,
+                  final Long creatorId,
+                  final LocalDateTime createdAt,
+                  final LocalDateTime updatedAt,
+                  final List<Session> sessionList
+    ) {
+        if (sessionList == null || sessionList.isEmpty()) {
+            throw new IllegalArgumentException("코스에 강의 목록이 존재하지 않습니다.");
+        }
+
+        if (cohort < 1) {
+            throw new IllegalArgumentException("기수는 최소 1이상이어야 합니다.");
+        }
+
         this.id = id;
         this.title = title;
+        this.cohort = cohort;
         this.creatorId = creatorId;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.sessionList = sessionList;
     }
 
     public String getTitle() {
