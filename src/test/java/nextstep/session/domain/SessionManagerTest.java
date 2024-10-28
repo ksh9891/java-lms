@@ -1,6 +1,7 @@
 package nextstep.session.domain;
 
 import nextstep.courses.exception.SessionNotRecruitingException;
+import nextstep.users.domain.NsUser;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -44,8 +45,8 @@ public class SessionManagerTest {
     @DisplayName("자리가 있다면 신청이 가능하다.")
     void shouldAllowApplyWhenSlotsAreAvailable() {
         final SessionManager sessionManager = SessionManager.withCapacityLimit(PAID_SESSION, Capacity.of(2));
-        final SessionUser user1 = new SessionUser("test1", PAID_FEE);
-        final SessionUser user2 = new SessionUser("test2", PAID_FEE);
+        final NsUser user1 = new NsUser();
+        final NsUser user2 = new NsUser();
 
         sessionManager.apply(INCLUDE_RECRUITMENT_DATE, user1, PAID_FEE);
         sessionManager.apply(INCLUDE_RECRUITMENT_DATE, user2, PAID_FEE);
@@ -62,9 +63,9 @@ public class SessionManagerTest {
         final SessionManager sessionManager = SessionManager.withCapacityLimit(PAID_SESSION, Capacity.of(2));
 
         assertThrows(SessionNotRecruitingException.class, () -> {
-            sessionManager.apply(INCLUDE_RECRUITMENT_DATE, new SessionUser("test1", PAID_FEE));
-            sessionManager.apply(INCLUDE_RECRUITMENT_DATE, new SessionUser("test2", PAID_FEE));
-            sessionManager.apply(INCLUDE_RECRUITMENT_DATE, new SessionUser("test3", PAID_FEE));
+            sessionManager.apply(INCLUDE_RECRUITMENT_DATE, new NsUser());
+            sessionManager.apply(INCLUDE_RECRUITMENT_DATE, new NsUser());
+            sessionManager.apply(INCLUDE_RECRUITMENT_DATE, new NsUser());
         });
     }
 
@@ -74,7 +75,7 @@ public class SessionManagerTest {
     void shouldThrowExceptionWhenSessionIsNotInRecruitingStatus() {
         final SessionManager sessionManager = SessionManager.withNoLimit(FREE_SESSION);
 
-        assertThatThrownBy(() -> sessionManager.apply(BEFORE_RECRUITMENT_DATE, new SessionUser("test1", Money.ZERO)))
+        assertThatThrownBy(() -> sessionManager.apply(BEFORE_RECRUITMENT_DATE, new NsUser()))
             .isExactlyInstanceOf(SessionNotRecruitingException.class);
     }
 
@@ -83,7 +84,7 @@ public class SessionManagerTest {
     void shouldApplyWhenPaymentAmountMatchesTuitionFee() {
         final SessionManager sessionManager = SessionManager.withCapacityLimit(PAID_SESSION, Capacity.of(2));
 
-        assertThatThrownBy(() -> sessionManager.apply(INCLUDE_RECRUITMENT_DATE, new SessionUser("test1", Money.of(BigInteger.valueOf(500))), Money.of(BigInteger.valueOf(500))))
+        assertThatThrownBy(() -> sessionManager.apply(INCLUDE_RECRUITMENT_DATE, new NsUser(), Money.of(BigInteger.valueOf(500))))
             .isExactlyInstanceOf(SessionNotRecruitingException.class);
     }
 }

@@ -1,6 +1,7 @@
 package nextstep.session.domain;
 
 import nextstep.courses.exception.SessionNotRecruitingException;
+import nextstep.users.domain.NsUser;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -9,7 +10,7 @@ import java.util.List;
 public class SessionManager {
     private final Session session;
     private final Capacity capacity;
-    private final List<SessionUser> sessionUserList;
+    private final List<NsUser> sessionUserList;
 
     private SessionManager(final Session session, final Capacity capacity) {
         this.session = session;
@@ -29,11 +30,11 @@ public class SessionManager {
         return capacity.hasLimit();
     }
 
-    public void apply(final LocalDate applyDate, final SessionUser sessionUser) {
+    public void apply(final LocalDate applyDate, final NsUser sessionUser) {
         apply(applyDate, sessionUser, Money.ZERO);
     }
 
-    public void apply(final LocalDate applyDate, final SessionUser sessionUser, final Money fee) {
+    public void apply(final LocalDate applyDate, final NsUser sessionUser, final Money fee) {
         if (!session.isRecruiting(applyDate)) {
             throw new SessionNotRecruitingException("모집 기간이 아닙니다.");
         }
@@ -49,7 +50,7 @@ public class SessionManager {
         sessionUserList.add(sessionUser);
     }
 
-    public boolean hasApplied(final SessionUser sessionUser) {
+    public boolean hasApplied(final NsUser sessionUser) {
         return sessionUserList.contains(sessionUser);
     }
 }
