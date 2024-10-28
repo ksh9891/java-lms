@@ -1,6 +1,7 @@
 package nextstep.session.domain;
 
 import nextstep.courses.exception.SessionNotRecruitingException;
+import nextstep.payments.domain.Payment;
 import nextstep.users.domain.NsUser;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -9,7 +10,6 @@ import java.math.BigInteger;
 import java.time.LocalDate;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -20,6 +20,8 @@ public class SessionTest {
     private static final LocalDate AFTER_RECRUITMENT_DATE = LocalDate.of(2024, 11, 3);
 
     private static final Money PAID_FEE = Money.of(BigInteger.valueOf(1000));
+    private static final Payment PAYMENT = new Payment("test001", 1L, 1L, 1000L);
+    private static final Payment UNDER_PAYMENT = new Payment("test001", 1L, 1L, 500L);
 
     @Test
     @DisplayName("Session 기간은 필수이다.")
@@ -75,8 +77,8 @@ public class SessionTest {
         final NsUser user1 = new NsUser();
         final NsUser user2 = new NsUser();
 
-        sessionManager.apply(INCLUDE_RECRUITMENT_DATE, user1, PAID_FEE);
-        sessionManager.apply(INCLUDE_RECRUITMENT_DATE, user2, PAID_FEE);
+        sessionManager.apply(INCLUDE_RECRUITMENT_DATE, user1, PAYMENT);
+        sessionManager.apply(INCLUDE_RECRUITMENT_DATE, user2, PAYMENT);
 
         assertAll(
             () -> assertThat(sessionManager.hasApplied(user1)).isTrue(),
@@ -90,9 +92,9 @@ public class SessionTest {
         final Session sessionManager = Session.paidSession(SESSION_DATE_RANGE, PAID_FEE, Capacity.of(2));
 
         assertThrows(SessionNotRecruitingException.class, () -> {
-            sessionManager.apply(INCLUDE_RECRUITMENT_DATE, new NsUser());
-            sessionManager.apply(INCLUDE_RECRUITMENT_DATE, new NsUser());
-            sessionManager.apply(INCLUDE_RECRUITMENT_DATE, new NsUser());
+            sessionManager.apply(INCLUDE_RECRUITMENT_DATE, new NsUser(), PAYMENT);
+            sessionManager.apply(INCLUDE_RECRUITMENT_DATE, new NsUser(), PAYMENT);
+            sessionManager.apply(INCLUDE_RECRUITMENT_DATE, new NsUser(), PAYMENT);
         });
     }
 
@@ -111,7 +113,7 @@ public class SessionTest {
     void shouldApplyWhenPaymentAmountMatchesTuitionFee() {
         final Session sessionManager = Session.paidSession(SESSION_DATE_RANGE, PAID_FEE, Capacity.of(2));
 
-        assertThatThrownBy(() -> sessionManager.apply(INCLUDE_RECRUITMENT_DATE, new NsUser(), Money.of(BigInteger.valueOf(500))))
+        assertThatThrownBy(() -> sessionManager.apply(INCLUDE_RECRUITMENT_DATE, new NsUser(), UNDER_PAYMENT))
             .isExactlyInstanceOf(SessionNotRecruitingException.class);
     }
 }

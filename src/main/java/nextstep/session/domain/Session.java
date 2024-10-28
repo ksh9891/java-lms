@@ -1,6 +1,7 @@
 package nextstep.session.domain;
 
 import nextstep.courses.exception.SessionNotRecruitingException;
+import nextstep.payments.domain.Payment;
 import nextstep.users.domain.NsUser;
 
 import java.math.BigInteger;
@@ -9,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Session {
+    private final SessionCoverImage sessionCoverImage;
     private final DateRange sessionDateRange;
     private final Money fee;
     private final Capacity capacity;
@@ -19,12 +21,13 @@ public class Session {
     }
 
     private Session(final DateRange sessionDateRange, final Money fee, final Capacity capacity) {
-        this(sessionDateRange, fee, capacity, new ArrayList<>());
+        this(null, sessionDateRange, fee, capacity, new ArrayList<>());
     }
 
-    private Session(final DateRange sessionDateRange, final Money fee, final Capacity capacity, final List<NsUser> sessionUserList) {
+    private Session(final SessionCoverImage sessionCoverImage, final DateRange sessionDateRange, final Money fee, final Capacity capacity, final List<NsUser> sessionUserList) {
         validationSession(sessionDateRange, fee);
 
+        this.sessionCoverImage = sessionCoverImage;
         this.sessionDateRange = sessionDateRange;
         this.fee = fee;
         this.capacity = capacity;
@@ -62,15 +65,15 @@ public class Session {
     }
 
     public void apply(final LocalDate applyDate, final NsUser sessionUser) {
-        apply(applyDate, sessionUser, Money.ZERO);
+        apply(applyDate, sessionUser, new Payment());
     }
 
-    public void apply(final LocalDate applyDate, final NsUser sessionUser, final Money fee) {
+    public void apply(final LocalDate applyDate, final NsUser sessionUser, final Payment payment) {
         if (!isRecruiting(applyDate)) {
             throw new SessionNotRecruitingException("모집 기간이 아닙니다.");
         }
 
-        if (!isEqualsFee(fee)) {
+        if (!payment.isEqualsFee(fee)) {
             throw new SessionNotRecruitingException("수강료가 지불한 금액과 일치하지 않습니다.");
         }
 
@@ -87,10 +90,6 @@ public class Session {
 
     public boolean hasLimit() {
         return capacity.hasLimit();
-    }
-
-    private boolean isEqualsFee(final Money fee) {
-        return this.fee.isEqualTo(fee);
     }
 
     private boolean isRecruiting(final LocalDate applyDate) {
