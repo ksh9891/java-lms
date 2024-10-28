@@ -19,6 +19,10 @@ public class DateRange {
         this.endDate = endDate;
     }
 
+    public boolean isBeforeStartDate(final LocalDate date) {
+        return date.isBefore(startDate);
+    }
+
     public boolean isBetween(final LocalDate inputDate) {
         if (inputDate == null) {
             throw new IllegalArgumentException("비교 날짜가 존재하지 않습니다.");

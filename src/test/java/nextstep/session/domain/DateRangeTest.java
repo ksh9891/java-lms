@@ -85,4 +85,15 @@ public class DateRangeTest {
 
         assertThat(dateRange.isBetween(inputDate)).isTrue();
     }
+
+    @Test
+    @DisplayName("입력값이 시작일 보다 이전이면 true 를 반환한다.")
+    void shouldReturnTrueWhenInputDateIsBeforeStartDate() {
+        final LocalDate startDate = LocalDate.of(2024, 10, 1);
+        final LocalDate endDate = LocalDate.of(2024, 10, 10);
+        final DateRange dateRange = new DateRange(startDate, endDate);
+        final LocalDate inputDate = LocalDate.of(2024, 9, 30);
+
+        assertThat(dateRange.isBeforeStartDate(inputDate)).isTrue();
+    }
 }
