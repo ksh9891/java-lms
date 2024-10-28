@@ -1,6 +1,6 @@
 package nextstep.session.domain;
 
-public class ImageProperties {
+public class ImageDimensions {
     private final static int MINIMUM_WIDTH = 300;
     private final static int MINIMUM_HEIGHT = 200;
     private final static double ASPECT_RATIO = 3.0 / 2.0;
@@ -8,7 +8,7 @@ public class ImageProperties {
     private final int width;
     private final int height;
 
-    public ImageProperties(final int width, final int height) {
+    public ImageDimensions(final int width, final int height) {
         if (width < MINIMUM_WIDTH) {
             throw new IllegalArgumentException("width 는 최소" + MINIMUM_WIDTH + "px 이상이어야 합니다.");
         }
