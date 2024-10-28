@@ -29,22 +29,6 @@ public class SessionTest {
     }
 
     @Test
-    @DisplayName("입력된 날짜가 모집기간 내에 포함되면 true 를 반환한다.")
-    void shouldReturnTrueWhenDateIsWithinRecruitmentPeriod() {
-        final Session session = Session.freeSession(SESSION_DATE_RANGE);
-
-        assertThat(session.isRecruiting(INCLUDE_RECRUITMENT_DATE)).isTrue();
-    }
-
-    @Test
-    @DisplayName("입력된 날짜가 모집기간 내에 포함되지 않으면 false 를 반환한다.")
-    void shouldReturnFalseWhenDateIsOutsideRecruitmentPeriod() {
-        final Session session = Session.freeSession(SESSION_DATE_RANGE);
-
-        assertThat(session.isRecruiting(BEFORE_RECRUITMENT_DATE)).isFalse();
-    }
-
-    @Test
     @DisplayName("입력된 날짜가 Session 시작일 이전이면 준비중 상태를 반환한다.")
     void shouldReturnPreparingStatusWhenDateIsBeforeSessionStartDate() {
         final Session session = Session.freeSession(SESSION_DATE_RANGE);

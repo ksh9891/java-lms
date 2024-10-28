@@ -53,7 +53,7 @@ public class Session {
         return this.fee.isEqualTo(fee);
     }
 
-    public boolean isRecruiting(final LocalDate applyDate) {
+    private boolean isRecruiting(final LocalDate applyDate) {
         return currentStatus(applyDate).isRecruit();
     }
 
