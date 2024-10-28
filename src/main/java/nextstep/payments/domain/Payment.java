@@ -1,5 +1,8 @@
 package nextstep.payments.domain;
 
+import nextstep.session.domain.Money;
+
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 
 public class Payment {
@@ -25,5 +28,14 @@ public class Payment {
         this.nsUserId = nsUserId;
         this.amount = amount;
         this.createdAt = LocalDateTime.now();
+    }
+
+    public boolean isEqualsFee(final Money sessionFee) {
+        if (amount == null) {
+            throw new IllegalArgumentException("결제 금액이 존재하지 않습니다.");
+        }
+
+        final Money fee = Money.of(BigInteger.valueOf(amount));
+        return fee.isEqualTo(sessionFee);
     }
 }
