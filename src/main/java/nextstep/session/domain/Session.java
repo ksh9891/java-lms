@@ -49,14 +49,6 @@ public class Session {
         return new Session(sessionDateRange, fee, capacity);
     }
 
-    public boolean isEqualsFee(final Money fee) {
-        return this.fee.isEqualTo(fee);
-    }
-
-    private boolean isRecruiting(final LocalDate applyDate) {
-        return currentStatus(applyDate).isRecruit();
-    }
-
     public SessionStatus currentStatus(final LocalDate localDate) {
         if (sessionDateRange.isBeforeStartDate(localDate)) {
             return SessionStatus.준비중;
@@ -95,5 +87,13 @@ public class Session {
 
     public boolean hasLimit() {
         return capacity.hasLimit();
+    }
+
+    private boolean isEqualsFee(final Money fee) {
+        return this.fee.isEqualTo(fee);
+    }
+
+    private boolean isRecruiting(final LocalDate applyDate) {
+        return currentStatus(applyDate).isRecruit();
     }
 }
