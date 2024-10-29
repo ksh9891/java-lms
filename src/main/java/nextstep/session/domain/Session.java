@@ -1,6 +1,5 @@
 package nextstep.session.domain;
 
-import nextstep.session.exception.SessionNotRecruitingException;
 import nextstep.payments.domain.Payment;
 import nextstep.users.domain.NsUser;
 
@@ -59,15 +58,15 @@ public class Session {
 
     public void apply(final NsUser sessionUser, final Payment payment) {
         if (!isRecruiting()) {
-            throw new SessionNotRecruitingException("모집 기간이 아닙니다.");
+            throw new IllegalStateException("모집 기간이 아닙니다.");
         }
 
         if (!payment.isEqualsFee(fee)) {
-            throw new SessionNotRecruitingException("수강료가 지불한 금액과 일치하지 않습니다.");
+            throw new IllegalArgumentException("수강료가 지불한 금액과 일치하지 않습니다.");
         }
 
         if (capacity.isFull(sessionUserList.size())) {
-            throw new SessionNotRecruitingException("수강생이 가득찼습니다.");
+            throw new IllegalStateException("수강생이 가득찼습니다.");
         }
 
         sessionUserList.add(sessionUser);
