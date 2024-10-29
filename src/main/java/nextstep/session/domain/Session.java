@@ -1,11 +1,6 @@
 package nextstep.session.domain;
 
-import nextstep.payments.domain.Payment;
-import nextstep.users.domain.NsUser;
-
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Session {
     private final SessionCoverImage sessionCoverImage;
@@ -13,25 +8,25 @@ public class Session {
     private final SessionStatus sessionStatus;
     private final Money fee;
     private final Capacity capacity;
-    private final List<NsUser> sessionUserList;
+    private final SessionUsers sessionUsers;
 
     private Session(final DateRange sessionDateRange, final SessionStatus sessionStatus, final Money fee) {
         this(sessionDateRange, sessionStatus, fee, Capacity.noLimit());
     }
 
     private Session(final DateRange sessionDateRange, final SessionStatus sessionStatus, final Money fee, final Capacity capacity) {
-        this(null, sessionDateRange, sessionStatus, fee, capacity, new ArrayList<>());
+        this(null, sessionDateRange, sessionStatus, fee, capacity, new SessionUsers());
     }
 
-    private Session(final SessionCoverImage sessionCoverImage, final DateRange sessionDateRange, final SessionStatus sessionStatus, final Money fee, final Capacity capacity, final List<NsUser> sessionUserList) {
-        this.sessionStatus = sessionStatus;
+    private Session(final SessionCoverImage sessionCoverImage, final DateRange sessionDateRange, final SessionStatus sessionStatus, final Money fee, final Capacity capacity, final SessionUsers sessionUsers) {
         validationSession(sessionDateRange, fee);
 
         this.sessionCoverImage = sessionCoverImage;
         this.sessionDateRange = sessionDateRange;
+        this.sessionStatus = sessionStatus;
         this.fee = fee;
         this.capacity = capacity;
-        this.sessionUserList = sessionUserList;
+        this.sessionUsers = sessionUsers;
     }
 
     private static void validationSession(final DateRange sessionDateRange, final Money fee) {
@@ -52,28 +47,30 @@ public class Session {
         return new Session(sessionDateRange, sessionStatus, fee, capacity);
     }
 
-    public void apply(final NsUser sessionUser) {
-        apply(sessionUser, new Payment());
-    }
-
-    public void apply(final NsUser sessionUser, final Payment payment) {
+    public void apply(final SessionUser sessionUser) {
         if (!isRecruiting()) {
             throw new IllegalStateException("모집 기간이 아닙니다.");
         }
 
-        if (!payment.isEqualsFee(fee)) {
-            throw new IllegalArgumentException("수강료가 지불한 금액과 일치하지 않습니다.");
+        if (!isFree()) {
+            validationPaidSession(sessionUser);
         }
 
-        if (capacity.isFull(sessionUserList.size())) {
-            throw new IllegalStateException("수강생이 가득찼습니다.");
-        }
-
-        sessionUserList.add(sessionUser);
+        sessionUsers.add(sessionUser);
     }
 
-    public boolean hasApplied(final NsUser sessionUser) {
-        return sessionUserList.contains(sessionUser);
+    private void validationPaidSession(final SessionUser sessionUser) {
+        if (!sessionUser.hasPaidFee(fee)) {
+            throw new IllegalArgumentException("수강료를 지불하지 않았습니다.");
+        }
+
+        if (capacity.isFull(sessionUsers.size())) {
+            throw new IllegalStateException("수강생이 가득찼습니다.");
+        }
+    }
+
+    public boolean hasApplied(final SessionUser sessionUser) {
+        return sessionUsers.contains(sessionUser);
     }
 
     public boolean hasLimit() {
@@ -82,5 +79,9 @@ public class Session {
 
     private boolean isRecruiting() {
         return sessionStatus.isRecruit();
+    }
+
+    private boolean isFree() {
+        return fee.isEqualTo(Money.ZERO);
     }
 }

@@ -45,28 +45,28 @@ public class SessionTest {
     @Test
     @DisplayName("자리가 있다면 신청이 가능하다.")
     void shouldAllowApplyWhenSlotsAreAvailable() {
-        final Session sessionManager = Session.paidSession(SESSION_DATE_RANGE, SessionStatus.모집중, PAID_FEE, Capacity.of(2));
-        final NsUser user1 = new NsUser();
-        final NsUser user2 = new NsUser();
+        final Session session = Session.paidSession(SESSION_DATE_RANGE, SessionStatus.모집중, PAID_FEE, Capacity.of(2));
+        final SessionUser user1 = new SessionUser(new NsUser(), session, PAYMENT);
+        final SessionUser user2 = new SessionUser(new NsUser(), session, PAYMENT);
 
-        sessionManager.apply(user1, PAYMENT);
-        sessionManager.apply(user2, PAYMENT);
+        session.apply(user1);
+        session.apply(user2);
 
         assertAll(
-            () -> assertThat(sessionManager.hasApplied(user1)).isTrue(),
-            () -> assertThat(sessionManager.hasApplied(user2)).isTrue()
+            () -> assertThat(session.hasApplied(user1)).isTrue(),
+            () -> assertThat(session.hasApplied(user2)).isTrue()
         );
     }
 
     @Test
     @DisplayName("자리가 없다면 예외가 발생한다.")
     void shouldThrowExceptionWhenNoSlotsAvailable() {
-        final Session sessionManager = Session.paidSession(SESSION_DATE_RANGE, SessionStatus.모집중, PAID_FEE, Capacity.of(2));
+        final Session session = Session.paidSession(SESSION_DATE_RANGE, SessionStatus.모집중, PAID_FEE, Capacity.of(2));
 
         assertThrows(IllegalStateException.class, () -> {
-            sessionManager.apply(new NsUser(), PAYMENT);
-            sessionManager.apply(new NsUser(), PAYMENT);
-            sessionManager.apply(new NsUser(), PAYMENT);
+            session.apply(new SessionUser(new NsUser(), session, PAYMENT));
+            session.apply(new SessionUser(new NsUser(), session, PAYMENT));
+            session.apply(new SessionUser(new NsUser(), session, PAYMENT));
         });
     }
 
@@ -74,18 +74,18 @@ public class SessionTest {
     @Test
     @DisplayName("Session 이 '모집중' 상태가 아니면 신청 시 예외가 발생한다.")
     void shouldThrowExceptionWhenSessionIsNotInRecruitingStatus() {
-        final Session sessionManager = Session.freeSession(SESSION_DATE_RANGE, SessionStatus.준비중);
+        final Session session = Session.freeSession(SESSION_DATE_RANGE, SessionStatus.준비중);
 
         assertThatIllegalStateException()
-            .isThrownBy(() -> sessionManager.apply(new NsUser()));
+            .isThrownBy(() -> session.apply(new SessionUser(new NsUser(), session, PAYMENT)));
     }
 
     @Test
     @DisplayName("수강생이 결제한 금액과 수강료가 일치하지 않으면 예외가 발생한다.")
     void shouldApplyWhenPaymentAmountMatchesTuitionFee() {
-        final Session sessionManager = Session.paidSession(SESSION_DATE_RANGE, SessionStatus.모집중, PAID_FEE, Capacity.of(2));
+        final Session session = Session.paidSession(SESSION_DATE_RANGE, SessionStatus.모집중, PAID_FEE, Capacity.of(2));
 
         assertThatIllegalArgumentException()
-            .isThrownBy(() -> sessionManager.apply(new NsUser(), UNDER_PAYMENT));
+            .isThrownBy(() -> session.apply(new SessionUser(new NsUser(), session, UNDER_PAYMENT)));
     }
 }
