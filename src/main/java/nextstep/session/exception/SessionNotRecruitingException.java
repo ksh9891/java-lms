@@ -1,4 +1,4 @@
-package nextstep.courses.exception;
+package nextstep.session.exception;
 
 public class SessionNotRecruitingException extends RuntimeException {
     public SessionNotRecruitingException(final String message) {

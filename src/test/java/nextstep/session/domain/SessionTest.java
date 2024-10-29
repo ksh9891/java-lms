@@ -1,6 +1,6 @@
 package nextstep.session.domain;
 
-import nextstep.courses.exception.SessionNotRecruitingException;
+import nextstep.session.exception.SessionNotRecruitingException;
 import nextstep.payments.domain.Payment;
 import nextstep.users.domain.NsUser;
 import org.junit.jupiter.api.DisplayName;
