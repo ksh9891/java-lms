@@ -1,6 +1,5 @@
 package nextstep.session.domain;
 
-import nextstep.session.exception.SessionNotRecruitingException;
 import nextstep.payments.domain.Payment;
 import nextstep.users.domain.NsUser;
 import org.junit.jupiter.api.DisplayName;
@@ -64,7 +63,7 @@ public class SessionTest {
     void shouldThrowExceptionWhenNoSlotsAvailable() {
         final Session sessionManager = Session.paidSession(SESSION_DATE_RANGE, SessionStatus.모집중, PAID_FEE, Capacity.of(2));
 
-        assertThrows(SessionNotRecruitingException.class, () -> {
+        assertThrows(IllegalStateException.class, () -> {
             sessionManager.apply(new NsUser(), PAYMENT);
             sessionManager.apply(new NsUser(), PAYMENT);
             sessionManager.apply(new NsUser(), PAYMENT);
@@ -77,8 +76,8 @@ public class SessionTest {
     void shouldThrowExceptionWhenSessionIsNotInRecruitingStatus() {
         final Session sessionManager = Session.freeSession(SESSION_DATE_RANGE, SessionStatus.준비중);
 
-        assertThatThrownBy(() -> sessionManager.apply(new NsUser()))
-            .isExactlyInstanceOf(SessionNotRecruitingException.class);
+        assertThatIllegalStateException()
+            .isThrownBy(() -> sessionManager.apply(new NsUser()));
     }
 
     @Test
@@ -86,7 +85,7 @@ public class SessionTest {
     void shouldApplyWhenPaymentAmountMatchesTuitionFee() {
         final Session sessionManager = Session.paidSession(SESSION_DATE_RANGE, SessionStatus.모집중, PAID_FEE, Capacity.of(2));
 
-        assertThatThrownBy(() -> sessionManager.apply(new NsUser(), UNDER_PAYMENT))
-            .isExactlyInstanceOf(SessionNotRecruitingException.class);
+        assertThatIllegalArgumentException()
+            .isThrownBy(() -> sessionManager.apply(new NsUser(), UNDER_PAYMENT));
     }
 }
