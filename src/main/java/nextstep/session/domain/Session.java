@@ -1,32 +1,40 @@
 package nextstep.session.domain;
 
 import java.math.BigInteger;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class Session {
+    private final Long courseId;
     private final SessionCoverImage sessionCoverImage;
     private final DateRange sessionDateRange;
     private final SessionStatus sessionStatus;
     private final Money fee;
     private final Capacity capacity;
     private final SessionUsers sessionUsers;
+    private final LocalDateTime createdAt;
+    private final LocalDateTime updatedAt;
 
-    private Session(final DateRange sessionDateRange, final SessionStatus sessionStatus, final Money fee) {
-        this(sessionDateRange, sessionStatus, fee, Capacity.noLimit());
+    private Session(final Long courseId, final DateRange sessionDateRange, final SessionStatus sessionStatus, final Money fee) {
+        this(courseId, sessionDateRange, sessionStatus, fee, Capacity.noLimit());
     }
 
-    private Session(final DateRange sessionDateRange, final SessionStatus sessionStatus, final Money fee, final Capacity capacity) {
-        this(null, sessionDateRange, sessionStatus, fee, capacity, new SessionUsers());
+    private Session(final Long courseId, final DateRange sessionDateRange, final SessionStatus sessionStatus, final Money fee, final Capacity capacity) {
+        this(courseId, null, sessionDateRange, sessionStatus, fee, capacity, new SessionUsers(), LocalDateTime.now(), null);
     }
 
-    private Session(final SessionCoverImage sessionCoverImage, final DateRange sessionDateRange, final SessionStatus sessionStatus, final Money fee, final Capacity capacity, final SessionUsers sessionUsers) {
+    private Session(final Long courseId, final SessionCoverImage sessionCoverImage, final DateRange sessionDateRange, final SessionStatus sessionStatus, final Money fee, final Capacity capacity, final SessionUsers sessionUsers, final LocalDateTime createdAt, final LocalDateTime updatedAt) {
         validationSession(sessionDateRange, fee);
 
+        this.courseId = courseId;
         this.sessionCoverImage = sessionCoverImage;
         this.sessionDateRange = sessionDateRange;
         this.sessionStatus = sessionStatus;
         this.fee = fee;
         this.capacity = capacity;
         this.sessionUsers = sessionUsers;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 
     private static void validationSession(final DateRange sessionDateRange, final Money fee) {
@@ -39,12 +47,12 @@ public class Session {
         }
     }
 
-    public static Session freeSession(final DateRange sessionDateRange, final SessionStatus sessionStatus) {
-        return new Session(sessionDateRange, sessionStatus, Money.of(BigInteger.ZERO));
+    public static Session freeSession(final Long courseId, final DateRange sessionDateRange, final SessionStatus sessionStatus) {
+        return new Session(courseId, sessionDateRange, sessionStatus, Money.of(BigInteger.ZERO));
     }
 
-    public static Session paidSession(final DateRange sessionDateRange, final SessionStatus sessionStatus, final Money fee, final Capacity capacity) {
-        return new Session(sessionDateRange, sessionStatus, fee, capacity);
+    public static Session paidSession(final Long courseId, final DateRange sessionDateRange, final SessionStatus sessionStatus, final Money fee, final Capacity capacity) {
+        return new Session(courseId, sessionDateRange, sessionStatus, fee, capacity);
     }
 
     public void apply(final SessionUser sessionUser) {
