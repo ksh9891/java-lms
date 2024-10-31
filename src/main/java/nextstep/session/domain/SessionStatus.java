@@ -1,15 +1,9 @@
 package nextstep.session.domain;
 
 public enum SessionStatus {
-    준비중(false), 모집중(true), 종료(false);
-
-    private final boolean isRecruit;
-
-    SessionStatus(boolean isRecruit) {
-        this.isRecruit = isRecruit;
-    }
+    준비중, 모집중, 종료;
 
     public boolean isRecruit() {
-        return isRecruit;
+        return this == 모집중;
     }
 }
