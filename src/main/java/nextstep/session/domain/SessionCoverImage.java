@@ -12,4 +12,20 @@ public class SessionCoverImage {
         this.dimensions = dimensions;
         this.size = size;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public ImageExtension getExtension() {
+        return extension;
+    }
+
+    public ImageDimensions getDimensions() {
+        return dimensions;
+    }
+
+    public ImageSize getSize() {
+        return size;
+    }
 }

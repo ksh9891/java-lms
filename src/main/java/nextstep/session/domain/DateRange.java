@@ -32,4 +32,12 @@ public class DateRange {
             endDate.isEqual(inputDate) ||
             (startDate.isBefore(inputDate) && endDate.isAfter(inputDate));
     }
+
+    public LocalDate getStartDate() {
+        return startDate;
+    }
+
+    public LocalDate getEndDate() {
+        return endDate;
+    }
 }
