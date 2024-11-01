@@ -25,6 +25,10 @@ public class NsUser {
     public NsUser() {
     }
 
+    public NsUser(final Long id) {
+        this.id = id;
+    }
+
     public NsUser(final Long id, final String userId) {
         this(id, userId, null, null, null);
     }

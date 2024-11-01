@@ -7,16 +7,20 @@ import java.math.BigInteger;
 import java.time.LocalDateTime;
 
 public class Session {
-    private final Long id;
-    private final Long courseId;
-    private final SessionCoverImage sessionCoverImage;
-    private final DateRange sessionDateRange;
-    private final SessionStatus sessionStatus;
-    private final Money fee;
-    private final Capacity capacity;
-    private final SessionUsers sessionUsers;
-    private final LocalDateTime createdAt;
-    private final LocalDateTime updatedAt;
+    private Long id;
+    private Long courseId;
+    private SessionCoverImage sessionCoverImage;
+    private DateRange sessionDateRange;
+    private SessionStatus sessionStatus;
+    private Money fee;
+    private Capacity capacity;
+    private SessionUsers sessionUsers;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+
+    public Session(final Long id) {
+        this.id = id;
+    }
 
     private Session(final Long id,
                     final Long courseId,
