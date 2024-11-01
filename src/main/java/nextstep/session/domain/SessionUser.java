@@ -1,28 +1,33 @@
 package nextstep.session.domain;
 
-import nextstep.payments.domain.Payment;
 import nextstep.users.domain.NsUser;
 
 public class SessionUser {
     private final NsUser user;
     private final Session session;
-    private final Payment payment;
 
     public SessionUser(final NsUser user, final Session session) {
-        this(user, session, null);
-    }
-
-    public SessionUser(final NsUser user, final Session session, final Payment payment) {
         this.user = user;
         this.session = session;
-        this.payment = payment;
     }
 
-    public boolean hasPaidFee(final Money fee) {
-        if (payment == null) {
-            return false;
-        }
+    public boolean matchSessionUser(final SessionUser sessionUser) {
+        return matchUser(sessionUser.user) && matchSession(sessionUser.session);
+    }
 
-        return payment.isEqualsFee(fee);
+    private boolean matchUser(final NsUser target) {
+        return user.matchUser(target);
+    }
+
+    private boolean matchSession(final Session target) {
+        return session.matchSession(target);
+    }
+
+    public NsUser getUser() {
+        return user;
+    }
+
+    public Session getSession() {
+        return session;
     }
 }

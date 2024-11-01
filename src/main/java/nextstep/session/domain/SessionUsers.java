@@ -22,7 +22,8 @@ public class SessionUsers {
         users.add(user);
     }
 
-    public boolean contains(final SessionUser user) {
-        return users.contains(user);
+    public boolean contains(final SessionUser sessionUser) {
+        return users.stream()
+            .anyMatch(user -> user.matchSessionUser(sessionUser));
     }
 }

@@ -46,11 +46,11 @@ public class SessionTest {
     @DisplayName("자리가 있다면 신청이 가능하다.")
     void shouldAllowApplyWhenSlotsAreAvailable() {
         final Session session = Session.paidSession(1L, 1L, SESSION_DATE_RANGE, SessionStatus.모집중, PAID_FEE, Capacity.of(2));
-        final SessionUser user1 = new SessionUser(new NsUser(), session, PAYMENT);
-        final SessionUser user2 = new SessionUser(new NsUser(), session, PAYMENT);
+        final NsUser user1 = new NsUser(1L, "test001");
+        final NsUser user2 = new NsUser(2L, "test002");
 
-        session.apply(user1);
-        session.apply(user2);
+        session.apply(user1, PAYMENT);
+        session.apply(user2, PAYMENT);
 
         assertAll(
             () -> assertThat(session.hasApplied(user1)).isTrue(),
@@ -64,9 +64,9 @@ public class SessionTest {
         final Session session = Session.paidSession(1L, 1L, SESSION_DATE_RANGE, SessionStatus.모집중, PAID_FEE, Capacity.of(2));
 
         assertThrows(IllegalStateException.class, () -> {
-            session.apply(new SessionUser(new NsUser(), session, PAYMENT));
-            session.apply(new SessionUser(new NsUser(), session, PAYMENT));
-            session.apply(new SessionUser(new NsUser(), session, PAYMENT));
+            session.apply(new NsUser(1L, "test001"), PAYMENT);
+            session.apply(new NsUser(2L, "test002"), PAYMENT);
+            session.apply(new NsUser(3L, "test003"), PAYMENT);
         });
     }
 
@@ -77,7 +77,7 @@ public class SessionTest {
         final Session session = Session.freeSession(1L, 1L, SESSION_DATE_RANGE, SessionStatus.준비중);
 
         assertThatIllegalStateException()
-            .isThrownBy(() -> session.apply(new SessionUser(new NsUser(), session, PAYMENT)));
+            .isThrownBy(() -> session.apply(new NsUser(1L, "test001")));
     }
 
     @Test
@@ -86,6 +86,6 @@ public class SessionTest {
         final Session session = Session.paidSession(1L, 1L, SESSION_DATE_RANGE, SessionStatus.모집중, PAID_FEE, Capacity.of(2));
 
         assertThatIllegalArgumentException()
-            .isThrownBy(() -> session.apply(new SessionUser(new NsUser(), session, UNDER_PAYMENT)));
+            .isThrownBy(() -> session.apply(new NsUser(1L, "test001"), UNDER_PAYMENT));
     }
 }

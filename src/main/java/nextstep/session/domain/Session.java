@@ -1,5 +1,8 @@
 package nextstep.session.domain;
 
+import nextstep.payments.domain.Payment;
+import nextstep.users.domain.NsUser;
+
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 
@@ -91,20 +94,28 @@ public class Session {
         return new Session(id, courseId, sessionDateRange, sessionStatus, fee, capacity);
     }
 
-    public void apply(final SessionUser sessionUser) {
+    public void apply(final NsUser nsUser) {
+        apply(nsUser, null);
+    }
+
+    public void apply(final NsUser nsUser, final Payment payment) {
         if (!isRecruiting()) {
             throw new IllegalStateException("모집 기간이 아닙니다.");
         }
 
         if (!isFree()) {
-            validationPaidSession(sessionUser);
+            validationPaidSession(payment);
         }
 
-        sessionUsers.add(sessionUser);
+        sessionUsers.add(new SessionUser(nsUser, this));
     }
 
-    private void validationPaidSession(final SessionUser sessionUser) {
-        if (!sessionUser.hasPaidFee(fee)) {
+    private void validationPaidSession(final Payment payment) {
+        if (payment == null) {
+            throw new IllegalArgumentException("결제정보가 존재하지 않습니다.");
+        }
+
+        if (!payment.isEqualsFee(fee)) {
             throw new IllegalArgumentException("수강료를 지불하지 않았습니다.");
         }
 
@@ -113,8 +124,13 @@ public class Session {
         }
     }
 
-    public boolean hasApplied(final SessionUser sessionUser) {
+    public boolean hasApplied(final NsUser nsUser) {
+        final SessionUser sessionUser = new SessionUser(nsUser, this);
         return sessionUsers.contains(sessionUser);
+    }
+
+    public boolean matchSession(final Session target) {
+        return id.equals(target.id);
     }
 
     public boolean hasLimit() {
