@@ -24,7 +24,7 @@ public class Session {
         this(id, courseId, null, sessionDateRange, sessionStatus, fee, capacity, new SessionUsers(), LocalDateTime.now(), null);
     }
 
-    private Session(final Long id, final Long courseId, final SessionCoverImage sessionCoverImage, final DateRange sessionDateRange, final SessionStatus sessionStatus, final Money fee, final Capacity capacity, final SessionUsers sessionUsers, final LocalDateTime createdAt, final LocalDateTime updatedAt) {
+    public Session(final Long id, final Long courseId, final SessionCoverImage sessionCoverImage, final DateRange sessionDateRange, final SessionStatus sessionStatus, final Money fee, final Capacity capacity, final SessionUsers sessionUsers, final LocalDateTime createdAt, final LocalDateTime updatedAt) {
         validationSession(sessionDateRange, fee);
 
         this.id = id;
