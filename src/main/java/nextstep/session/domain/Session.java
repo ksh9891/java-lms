@@ -16,15 +16,40 @@ public class Session {
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
 
-    private Session(final Long id, final Long courseId, final DateRange sessionDateRange, final SessionStatus sessionStatus, final Money fee) {
-        this(id, courseId, sessionDateRange, sessionStatus, fee, Capacity.noLimit());
+    private Session(final Long id,
+                    final Long courseId,
+                    final DateRange sessionDateRange,
+                    final SessionStatus sessionStatus,
+                    final Money fee,
+                    final Capacity capacity
+    ) {
+        this(id, courseId, null, sessionDateRange, sessionStatus, fee, capacity, LocalDateTime.now(), null);
     }
 
-    private Session(final Long id, final Long courseId, final DateRange sessionDateRange, final SessionStatus sessionStatus, final Money fee, final Capacity capacity) {
-        this(id, courseId, null, sessionDateRange, sessionStatus, fee, capacity, new SessionUsers(), LocalDateTime.now(), null);
+    public Session(final Long id,
+                   final Long courseId,
+                   final SessionCoverImage sessionCoverImage,
+                   final DateRange sessionDateRange,
+                   final SessionStatus sessionStatus,
+                   final Money fee,
+                   final Capacity capacity,
+                   final LocalDateTime createdAt,
+                   final LocalDateTime updatedAt
+    ) {
+        this(id, courseId, sessionCoverImage, sessionDateRange, sessionStatus, fee, capacity, new SessionUsers(), createdAt, updatedAt);
     }
 
-    public Session(final Long id, final Long courseId, final SessionCoverImage sessionCoverImage, final DateRange sessionDateRange, final SessionStatus sessionStatus, final Money fee, final Capacity capacity, final SessionUsers sessionUsers, final LocalDateTime createdAt, final LocalDateTime updatedAt) {
+    public Session(final Long id,
+                   final Long courseId,
+                   final SessionCoverImage sessionCoverImage,
+                   final DateRange sessionDateRange,
+                   final SessionStatus sessionStatus,
+                   final Money fee,
+                   final Capacity capacity,
+                   final SessionUsers sessionUsers,
+                   final LocalDateTime createdAt,
+                   final LocalDateTime updatedAt
+    ) {
         validationSession(sessionDateRange, fee);
 
         this.id = id;
@@ -49,11 +74,21 @@ public class Session {
         }
     }
 
-    public static Session freeSession(final Long id, final Long courseId, final DateRange sessionDateRange, final SessionStatus sessionStatus) {
-        return new Session(id, courseId, sessionDateRange, sessionStatus, Money.of(BigInteger.ZERO));
+    public static Session freeSession(final Long id,
+                                      final Long courseId,
+                                      final DateRange sessionDateRange,
+                                      final SessionStatus sessionStatus
+    ) {
+        return new Session(id, courseId, sessionDateRange, sessionStatus, Money.of(BigInteger.ZERO), Capacity.noLimit());
     }
 
-    public static Session paidSession(final Long id, final Long courseId, final DateRange sessionDateRange, final SessionStatus sessionStatus, final Money fee, final Capacity capacity) {
+    public static Session paidSession(final Long id,
+                                      final Long courseId,
+                                      final DateRange sessionDateRange,
+                                      final SessionStatus sessionStatus,
+                                      final Money fee,
+                                      final Capacity capacity
+    ) {
         return new Session(id, courseId, sessionDateRange, sessionStatus, fee, capacity);
     }
 
