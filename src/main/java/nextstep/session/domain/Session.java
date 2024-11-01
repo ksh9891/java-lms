@@ -145,6 +145,10 @@ public class Session {
         return fee.isEqualTo(Money.ZERO);
     }
 
+    public Long getId() {
+        return id;
+    }
+
     public Long getCourseId() {
         return courseId;
     }
