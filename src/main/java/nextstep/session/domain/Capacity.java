@@ -26,4 +26,8 @@ public class Capacity {
 
         return this.capacity == currentCapacity;
     }
+
+    public Integer toIntValue() {
+        return capacity;
+    }
 }

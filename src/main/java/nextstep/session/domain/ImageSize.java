@@ -14,6 +14,10 @@ public class ImageSize {
         this.size = size;
     }
 
+    public long toLongValue() {
+        return size;
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
