@@ -32,6 +32,10 @@ public class Money {
         return this.money.equals(other.money);
     }
 
+    public long toLongValue() {
+        return this.money.longValue();
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
