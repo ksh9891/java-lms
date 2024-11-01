@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class Session {
+    private final Long id;
     private final Long courseId;
     private final SessionCoverImage sessionCoverImage;
     private final DateRange sessionDateRange;
@@ -15,17 +16,18 @@ public class Session {
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
 
-    private Session(final Long courseId, final DateRange sessionDateRange, final SessionStatus sessionStatus, final Money fee) {
-        this(courseId, sessionDateRange, sessionStatus, fee, Capacity.noLimit());
+    private Session(final Long id, final Long courseId, final DateRange sessionDateRange, final SessionStatus sessionStatus, final Money fee) {
+        this(id, courseId, sessionDateRange, sessionStatus, fee, Capacity.noLimit());
     }
 
-    private Session(final Long courseId, final DateRange sessionDateRange, final SessionStatus sessionStatus, final Money fee, final Capacity capacity) {
-        this(courseId, null, sessionDateRange, sessionStatus, fee, capacity, new SessionUsers(), LocalDateTime.now(), null);
+    private Session(final Long id, final Long courseId, final DateRange sessionDateRange, final SessionStatus sessionStatus, final Money fee, final Capacity capacity) {
+        this(id, courseId, null, sessionDateRange, sessionStatus, fee, capacity, new SessionUsers(), LocalDateTime.now(), null);
     }
 
-    private Session(final Long courseId, final SessionCoverImage sessionCoverImage, final DateRange sessionDateRange, final SessionStatus sessionStatus, final Money fee, final Capacity capacity, final SessionUsers sessionUsers, final LocalDateTime createdAt, final LocalDateTime updatedAt) {
+    private Session(final Long id, final Long courseId, final SessionCoverImage sessionCoverImage, final DateRange sessionDateRange, final SessionStatus sessionStatus, final Money fee, final Capacity capacity, final SessionUsers sessionUsers, final LocalDateTime createdAt, final LocalDateTime updatedAt) {
         validationSession(sessionDateRange, fee);
 
+        this.id = id;
         this.courseId = courseId;
         this.sessionCoverImage = sessionCoverImage;
         this.sessionDateRange = sessionDateRange;
@@ -47,12 +49,12 @@ public class Session {
         }
     }
 
-    public static Session freeSession(final Long courseId, final DateRange sessionDateRange, final SessionStatus sessionStatus) {
-        return new Session(courseId, sessionDateRange, sessionStatus, Money.of(BigInteger.ZERO));
+    public static Session freeSession(final Long id, final Long courseId, final DateRange sessionDateRange, final SessionStatus sessionStatus) {
+        return new Session(id, courseId, sessionDateRange, sessionStatus, Money.of(BigInteger.ZERO));
     }
 
-    public static Session paidSession(final Long courseId, final DateRange sessionDateRange, final SessionStatus sessionStatus, final Money fee, final Capacity capacity) {
-        return new Session(courseId, sessionDateRange, sessionStatus, fee, capacity);
+    public static Session paidSession(final Long id, final Long courseId, final DateRange sessionDateRange, final SessionStatus sessionStatus, final Money fee, final Capacity capacity) {
+        return new Session(id, courseId, sessionDateRange, sessionStatus, fee, capacity);
     }
 
     public void apply(final SessionUser sessionUser) {
@@ -91,5 +93,37 @@ public class Session {
 
     private boolean isFree() {
         return fee.isEqualTo(Money.ZERO);
+    }
+
+    public Long getCourseId() {
+        return courseId;
+    }
+
+    public String getStatus() {
+        return sessionStatus.name();
+    }
+
+    public Money getFee() {
+        return fee;
+    }
+
+    public LocalDate getStartDate() {
+        return sessionDateRange.getStartDate();
+    }
+
+    public LocalDate getEndDate() {
+        return sessionDateRange.getEndDate();
+    }
+
+    public Capacity getCapacity() {
+        return capacity;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
     }
 }
