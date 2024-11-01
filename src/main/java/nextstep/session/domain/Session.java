@@ -1,7 +1,6 @@
 package nextstep.session.domain;
 
 import java.math.BigInteger;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class Session {
@@ -142,12 +141,8 @@ public class Session {
         return fee;
     }
 
-    public LocalDate getStartDate() {
-        return sessionDateRange.getStartDate();
-    }
-
-    public LocalDate getEndDate() {
-        return sessionDateRange.getEndDate();
+    public DateRange getSessionDateRange() {
+        return sessionDateRange;
     }
 
     public Capacity getCapacity() {
@@ -160,5 +155,9 @@ public class Session {
 
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
+    }
+
+    public SessionCoverImage getSessionCoverImage() {
+        return sessionCoverImage;
     }
 }
