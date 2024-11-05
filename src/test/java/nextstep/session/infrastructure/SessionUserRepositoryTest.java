@@ -26,13 +26,10 @@ public class SessionUserRepositoryTest {
 
     @Test
     void crud() {
-        final SessionUser sessionUser = new SessionUser(
-            new NsUser(1L),
-            new Session(1L)
-        );
+        final SessionUser sessionUser = new SessionUser(1L, 1L);
         int count = sessionUserRepository.save(sessionUser);
         assertThat(count).isEqualTo(1);
         final SessionUser savedSessionUser = sessionUserRepository.findById(1L, 1L);
-        assertThat(sessionUser.getUser().getId()).isEqualTo(savedSessionUser.getUser().getId());
+        assertThat(sessionUser.getUserId()).isEqualTo(savedSessionUser.getUserId());
     }
 }

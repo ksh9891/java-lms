@@ -9,7 +9,6 @@ import java.math.BigInteger;
 import java.time.LocalDate;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class SessionTest {

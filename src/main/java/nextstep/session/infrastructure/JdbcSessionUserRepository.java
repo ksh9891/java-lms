@@ -24,21 +24,20 @@ public class JdbcSessionUserRepository implements SessionUserRepository {
         final String sql = "insert into session_users(session_id, ns_user_id, created_at) values(?, ?, ?)";
         return jdbcTemplate.update(
             sql,
-            sessionUser.getSession().getId(),
-            sessionUser.getUser().getId(),
+            sessionUser.getSessionId(),
+            sessionUser.getUserId(),
             sessionUser.getCreatedAt()
         );
     }
 
     @Override
     public SessionUser findById(final Long sessionId, final Long userId) {
-        String sql = "select id, session_id, ns_user_id, created_at, updated_at from session_users where session_id = ? and ns_user_id = ?";
+        String sql = "select session_id, ns_user_id, created_at, updated_at from session_users where session_id = ? and ns_user_id = ?";
         RowMapper<SessionUser> rowMapper = (rs, rowNum) -> new SessionUser(
             rs.getLong(1),
-            new NsUser(rs.getLong(2)),
-            new Session(rs.getLong(3)),
-            toLocalDateTime(rs.getTimestamp(4)),
-            toLocalDateTime(rs.getTimestamp(5))
+            rs.getLong(2),
+            toLocalDateTime(rs.getTimestamp(3)),
+            toLocalDateTime(rs.getTimestamp(4))
         );
         return jdbcTemplate.queryForObject(sql, rowMapper, sessionId, userId);
     }
