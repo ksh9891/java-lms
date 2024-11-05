@@ -112,6 +112,10 @@ public class Session {
             validationPaidSession(payment);
         }
 
+        if (!hasApplied(nsUser)) {
+            throw new IllegalStateException("이미 신청되었습니다.");
+        }
+
         sessionUsers.add(new SessionUser(nsUser, this));
     }
 
@@ -129,7 +133,7 @@ public class Session {
         }
     }
 
-    public boolean hasApplied(final NsUser nsUser) {
+    private boolean hasApplied(final NsUser nsUser) {
         final SessionUser sessionUser = new SessionUser(nsUser, this);
         return sessionUsers.contains(sessionUser);
     }

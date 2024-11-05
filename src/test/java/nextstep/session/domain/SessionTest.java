@@ -43,19 +43,16 @@ public class SessionTest {
     }
 
     @Test
-    @DisplayName("자리가 있다면 신청이 가능하다.")
-    void shouldAllowApplyWhenSlotsAreAvailable() {
+    @DisplayName("동일한 회원이 같은 Session 에 수강신청을 하면 예외가 발생한다.")
+    void shouldThrowExceptionWhenSameUserRegistersForSameSessionTwice() {
         final Session session = Session.paidSession(1L, 1L, SESSION_DATE_RANGE, SessionStatus.모집중, PAID_FEE, Capacity.of(2));
         final NsUser user1 = new NsUser(1L, "test001");
-        final NsUser user2 = new NsUser(2L, "test002");
 
-        session.apply(user1, PAYMENT);
-        session.apply(user2, PAYMENT);
-
-        assertAll(
-            () -> assertThat(session.hasApplied(user1)).isTrue(),
-            () -> assertThat(session.hasApplied(user2)).isTrue()
-        );
+        assertThatIllegalStateException()
+            .isThrownBy(() -> {
+                session.apply(user1, PAYMENT);
+                session.apply(user1, PAYMENT);
+            });
     }
 
     @Test
