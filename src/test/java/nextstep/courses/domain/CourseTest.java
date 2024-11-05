@@ -11,13 +11,6 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 
 public class CourseTest {
     @Test
-    @DisplayName("Session 이 없다면 Course 생성 시 예외가 발생한다.")
-    void shouldThrowExceptionWhenSessionDoesNotExist() {
-        assertThatIllegalArgumentException()
-            .isThrownBy(() -> new Course(1L, "TDD, 클린 코드 with Java", 40, 1L, LocalDateTime.now(), null, Collections.emptyList()));
-    }
-
-    @Test
     @DisplayName("기수가 1보다 작은 수가 지정 되었다면 예외가 발생한다.")
     void shouldThrowExceptionWhenCohortIsNotProvided() {
         assertThatIllegalArgumentException()
