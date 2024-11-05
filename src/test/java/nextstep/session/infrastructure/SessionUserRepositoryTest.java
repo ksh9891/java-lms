@@ -29,7 +29,7 @@ public class SessionUserRepositoryTest {
         final SessionUser sessionUser = new SessionUser(1L, 1L);
         int count = sessionUserRepository.save(sessionUser);
         assertThat(count).isEqualTo(1);
-        final SessionUser savedSessionUser = sessionUserRepository.findById(1L, 1L);
+        final SessionUser savedSessionUser = sessionUserRepository.findByIdAndUserId(1L, 1L);
         assertThat(sessionUser.getUserId()).isEqualTo(savedSessionUser.getUserId());
     }
 }

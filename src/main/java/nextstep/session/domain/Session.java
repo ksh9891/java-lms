@@ -99,6 +99,10 @@ public class Session {
         return new Session(id, courseId, sessionDateRange, sessionStatus, fee, capacity);
     }
 
+    public void addSessionUsers(final SessionUsers sessionUsers) {
+        this.sessionUsers = sessionUsers;
+    }
+
     public void apply(final NsUser nsUser) {
         apply(nsUser, null);
     }

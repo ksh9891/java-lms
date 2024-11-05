@@ -1,15 +1,15 @@
 package nextstep.session.infrastructure;
 
-import nextstep.session.domain.Session;
 import nextstep.session.domain.SessionUser;
 import nextstep.session.domain.SessionUserRepository;
-import nextstep.users.domain.NsUser;
+import nextstep.session.domain.SessionUsers;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Repository("sessionUserRepository")
 public class JdbcSessionUserRepository implements SessionUserRepository {
@@ -31,7 +31,20 @@ public class JdbcSessionUserRepository implements SessionUserRepository {
     }
 
     @Override
-    public SessionUser findById(final Long sessionId, final Long userId) {
+    public SessionUsers findById(final Long sessionId) {
+        String sql = "select session_id, ns_user_id, created_at, updated_at from session_users where session_id = ?";
+        RowMapper<SessionUser> rowMapper = (rs, rowNum) -> new SessionUser(
+            rs.getLong(1),
+            rs.getLong(2),
+            toLocalDateTime(rs.getTimestamp(3)),
+            toLocalDateTime(rs.getTimestamp(4))
+        );
+        final List<SessionUser> sessionUser = jdbcTemplate.query(sql, rowMapper, sessionId);
+        return new SessionUsers(sessionUser);
+    }
+
+    @Override
+    public SessionUser findByIdAndUserId(final Long sessionId, final Long userId) {
         String sql = "select session_id, ns_user_id, created_at, updated_at from session_users where session_id = ? and ns_user_id = ?";
         RowMapper<SessionUser> rowMapper = (rs, rowNum) -> new SessionUser(
             rs.getLong(1),
