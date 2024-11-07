@@ -26,7 +26,7 @@ public class JdbcSessionRepository implements SessionRepository {
 
     @Override
     public int save(final Session session) {
-        final String sql = "insert into session(course_id, session_status, recruit_status, fee, start_date, end_date, capacity, cover_image_name, cover_image_extension, cover_image_width, cover_image_height, cover_image_size, created_at) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        final String sql = "insert into session(course_id, session_status, recruit_status, fee, start_date, end_date, capacity, created_at) values(?, ?, ?, ?, ?, ?, ?, ?)";
         return jdbcTemplate.update(
             sql,
             session.getCourseId(),
@@ -36,34 +36,36 @@ public class JdbcSessionRepository implements SessionRepository {
             session.getSessionDateRange().getStartDate(),
             session.getSessionDateRange().getEndDate(),
             session.getCapacity().toIntValue(),
-            session.getSessionCoverImage().getName(),
-            session.getSessionCoverImage().getExtension().name(),
-            session.getSessionCoverImage().getDimensions().getWidth(),
-            session.getSessionCoverImage().getDimensions().getHeight(),
-            session.getSessionCoverImage().getSize().toLongValue(),
             session.getCreatedAt()
         );
     }
 
     @Override
     public Session findById(final Long id) {
-        String sql = "select s.id, s.course_id, s.cover_image_name, s.cover_image_extension, s.cover_image_width, s.cover_image_height, s.cover_image_size, " +
-            "s.start_date, s.end_date, s.session_status, s.recruit_status, s.fee, s.capacity, s.created_at, s.updated_at, " +
+        String sql = "select s.id, s.course_id, s.start_date, s.end_date, s.session_status, s.recruit_status, s.fee, s.capacity, s.created_at, s.updated_at, " +
+            "sci.cover_image_name, sci.cover_image_extension, sci.cover_image_width, sci.cover_image_height, sci.cover_image_size, sci.created_at as image_created_at, sci.updated_at as image_updated_at, " +
             "su.session_id, su.ns_user_id, nu.user_id, su.created_at as session_users_created_at, su.updated_at as session_users_updated_at " +
-            "from session s left join session_users su on s.id = su.session_id left join ns_user nu on su.ns_user_id = nu.id " +
+            "from session s " +
+            "left join session_cover_image sci on s.id = sci.session_id " +
+            "left join session_users su on s.id = su.session_id " +
+            "left join ns_user nu on su.ns_user_id = nu.id " +
             "where s.id = ?";
 
         return jdbcTemplate.query(sql, rs -> {
             Session session = null;
             int row = 0;
             final SessionUsers sessionUsers = new SessionUsers();
+            final SessionCoverImages sessionCoverImages = new SessionCoverImages();
             while (rs.next()) {
                 if (session == null) {
                     session = sessionRowMapper().mapRow(rs, row);
                 }
 
                 if (session != null) {
-                    final SessionUser sessionUser = SessionUserRowMapper().mapRow(rs, row);
+                    final SessionCoverImage sessionCoverImage = sessionCoverImagesRowMapper().mapRow(rs, row);
+                    sessionCoverImages.add(sessionCoverImage);
+
+                    final SessionUser sessionUser = sessionUserRowMapper().mapRow(rs, row);
                     sessionUsers.add(sessionUser);
                     row++;
                 }
@@ -71,13 +73,14 @@ public class JdbcSessionRepository implements SessionRepository {
 
             if (session != null) {
                 session.addSessionUsers(sessionUsers);
+                session.addCoverImages(sessionCoverImages);
             }
 
             return session;
         }, id);
     }
 
-    private RowMapper<SessionUser> SessionUserRowMapper() {
+    private RowMapper<SessionUser> sessionUserRowMapper() {
         return (rs, rowNum) -> new SessionUser(
             rs.getLong("session_id"),
             new NsUser(rs.getLong("ns_user_id"), rs.getString("user_id")),
@@ -86,16 +89,21 @@ public class JdbcSessionRepository implements SessionRepository {
         );
     }
 
+    private RowMapper<SessionCoverImage> sessionCoverImagesRowMapper() {
+        return (rs, rowNum) -> new SessionCoverImage(
+            rs.getString("cover_image_name"),
+            ImageExtension.supports(rs.getString("cover_image_extension")),
+            new ImageDimensions(rs.getInt("cover_image_width"), rs.getInt("cover_image_height")),
+            new ImageSize(rs.getLong("cover_image_size")),
+            toLocalDateTime(rs.getTimestamp("image_created_at")),
+            toLocalDateTime(rs.getTimestamp("image_updated_at"))
+        );
+    }
+
     private RowMapper<Session> sessionRowMapper() {
         return (rs, rowNum) -> new Session(
             rs.getLong("id"),
             rs.getLong("course_id"),
-            new SessionCoverImage(
-                rs.getString("cover_image_name"),
-                ImageExtension.supports(rs.getString("cover_image_extension")),
-                new ImageDimensions(rs.getInt("cover_image_width"), rs.getInt("cover_image_height")),
-                new ImageSize(rs.getLong("cover_image_size"))
-            ),
             new DateRange(toLocalDate(rs.getTimestamp("start_date")), toLocalDate(rs.getTimestamp("end_date"))),
             SessionStatus.fromName(rs.getString("session_status")),
             SessionRecruiting.fromName(rs.getString("recruit_status")),

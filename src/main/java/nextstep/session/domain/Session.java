@@ -10,7 +10,7 @@ import java.util.Objects;
 public class Session {
     private Long id;
     private Long courseId;
-    private SessionCoverImage sessionCoverImage;
+    private SessionCoverImages sessionCoverImages;
     private DateRange sessionDateRange;
     private SessionStatus sessionStatus;
     private SessionRecruiting sessionRecruiting;
@@ -32,12 +32,11 @@ public class Session {
                     final Money fee,
                     final Capacity capacity
     ) {
-        this(id, courseId, null, sessionDateRange, sessionStatus, sessionRecruiting, fee, capacity, LocalDateTime.now(), null);
+        this(id, courseId, sessionDateRange, sessionStatus, sessionRecruiting, fee, capacity, LocalDateTime.now(), null);
     }
 
     public Session(final Long id,
                    final Long courseId,
-                   final SessionCoverImage sessionCoverImage,
                    final DateRange sessionDateRange,
                    final SessionStatus sessionStatus,
                    final SessionRecruiting sessionRecruiting,
@@ -46,12 +45,12 @@ public class Session {
                    final LocalDateTime createdAt,
                    final LocalDateTime updatedAt
     ) {
-        this(id, courseId, sessionCoverImage, sessionDateRange, sessionStatus, sessionRecruiting, fee, capacity, new SessionUsers(), createdAt, updatedAt);
+        this(id, courseId, new SessionCoverImages(), sessionDateRange, sessionStatus, sessionRecruiting, fee, capacity, new SessionUsers(), createdAt, updatedAt);
     }
 
     public Session(final Long id,
                    final Long courseId,
-                   final SessionCoverImage sessionCoverImage,
+                   final SessionCoverImages sessionCoverImages,
                    final DateRange sessionDateRange,
                    final SessionStatus sessionStatus,
                    final SessionRecruiting sessionRecruiting,
@@ -65,7 +64,7 @@ public class Session {
 
         this.id = id;
         this.courseId = courseId;
-        this.sessionCoverImage = sessionCoverImage;
+        this.sessionCoverImages = sessionCoverImages;
         this.sessionDateRange = sessionDateRange;
         this.sessionStatus = sessionStatus;
         this.sessionRecruiting = sessionRecruiting;
@@ -104,6 +103,10 @@ public class Session {
                                       final Capacity capacity
     ) {
         return new Session(id, courseId, sessionDateRange, sessionStatus, sessionRecruiting, fee, capacity);
+    }
+
+    public void addCoverImages(final SessionCoverImages sessionCoverImages) {
+        this.sessionCoverImages = sessionCoverImages;
     }
 
     public void addSessionUsers(final SessionUsers sessionUsers) {
@@ -201,8 +204,8 @@ public class Session {
         return updatedAt;
     }
 
-    public SessionCoverImage getSessionCoverImage() {
-        return sessionCoverImage;
+    public SessionCoverImages getSessionCoverImages() {
+        return sessionCoverImages;
     }
 
     @Override

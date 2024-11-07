@@ -21,11 +21,13 @@ public class SessionRepositoryTest {
 
     private SessionRepository sessionRepository;
     private SessionUserRepository sessionUserRepository;
+    private SessionCoverImageRepository sessionCoverImageRepository;
 
     @BeforeEach
     void setUp() {
         sessionRepository = new JdbcSessionRepository(jdbcTemplate);
         sessionUserRepository = new JdbcSessionUserRepository(jdbcTemplate);
+        sessionCoverImageRepository = new JdbcSessionCoverImageRepository(jdbcTemplate);
     }
 
     @Test
@@ -33,12 +35,6 @@ public class SessionRepositoryTest {
         final Session session = new Session(
             0L,
             1L,
-            new SessionCoverImage(
-                "커버이미지",
-                ImageExtension.GIF,
-                new ImageDimensions(300, 200),
-                new ImageSize(512L)
-            ),
             new DateRange(
                 LocalDate.of(2024, 11, 1),
                 LocalDate.of(2024, 11, 30)
@@ -51,8 +47,18 @@ public class SessionRepositoryTest {
             null
         );
         int count = sessionRepository.save(session);
+
         final SessionUser sessionUser = new SessionUser(1L, new NsUser(1L));
         sessionUserRepository.save(sessionUser);
+
+        final SessionCoverImage sessionCoverImage = new SessionCoverImage(
+            "커버이미지",
+            ImageExtension.GIF,
+            new ImageDimensions(300, 200),
+            new ImageSize(512L)
+        );
+        sessionCoverImageRepository.save(1L, sessionCoverImage);
+
         assertThat(count).isEqualTo(1);
         final Session savedSession = sessionRepository.findById(1L);
         assertThat(session.getSessionStatus()).isEqualTo(savedSession.getSessionStatus());
