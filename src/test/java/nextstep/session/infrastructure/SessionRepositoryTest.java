@@ -40,6 +40,7 @@ public class SessionRepositoryTest {
                 LocalDate.of(2024, 11, 1),
                 LocalDate.of(2024, 11, 30)
             ),
+            SessionStatus.준비중,
             SessionRecruiting.모집중,
             Money.of(BigInteger.valueOf(100_000L)),
             Capacity.of(100),
@@ -49,6 +50,6 @@ public class SessionRepositoryTest {
         int count = sessionRepository.save(session);
         assertThat(count).isEqualTo(1);
         final Session savedSession = sessionRepository.findById(1L);
-        assertThat(session.getStatus()).isEqualTo(savedSession.getStatus());
+        assertThat(session.getSessionStatus()).isEqualTo(savedSession.getSessionStatus());
     }
 }

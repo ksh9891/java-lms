@@ -19,11 +19,12 @@ public class JdbcSessionRepository implements SessionRepository {
 
     @Override
     public int save(final Session session) {
-        final String sql = "insert into session(course_id, status, fee, start_date, end_date, capacity, cover_image_name, cover_image_extension, cover_image_width, cover_image_height, cover_image_size, created_at) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        final String sql = "insert into session(course_id, session_status, recruit_status, fee, start_date, end_date, capacity, cover_image_name, cover_image_extension, cover_image_width, cover_image_height, cover_image_size, created_at) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         return jdbcTemplate.update(
             sql,
             session.getCourseId(),
-            session.getStatus(),
+            session.getSessionStatus(),
+            session.getSessionRecruiting(),
             session.getFee().toLongValue(),
             session.getSessionDateRange().getStartDate(),
             session.getSessionDateRange().getEndDate(),
@@ -39,7 +40,7 @@ public class JdbcSessionRepository implements SessionRepository {
 
     @Override
     public Session findById(final Long id) {
-        String sql = "select id, course_id, cover_image_name, cover_image_extension, cover_image_width, cover_image_height, cover_image_size, start_date, end_date, status, fee, capacity, created_at, updated_at from session where id = ?";
+        String sql = "select id, course_id, cover_image_name, cover_image_extension, cover_image_width, cover_image_height, cover_image_size, start_date, end_date, session_status, recruit_status, fee, capacity, created_at, updated_at from session where id = ?";
         RowMapper<Session> rowMapper = (rs, rowNum) -> new Session(
             rs.getLong(1),
             rs.getLong(2),
@@ -50,11 +51,12 @@ public class JdbcSessionRepository implements SessionRepository {
                 new ImageSize(rs.getLong(7))
             ),
             new DateRange(toLocalDate(rs.getTimestamp(8)), toLocalDate(rs.getTimestamp(9))),
-            SessionRecruiting.fromName(rs.getString(10)),
-            Money.of(rs.getBigDecimal(11).toBigInteger()),
-            Capacity.of(rs.getInt(12)),
-            toLocalDateTime(rs.getTimestamp(13)),
-            toLocalDateTime(rs.getTimestamp(14))
+            SessionStatus.fromName(rs.getString(10)),
+            SessionRecruiting.fromName(rs.getString(11)),
+            Money.of(rs.getBigDecimal(12).toBigInteger()),
+            Capacity.of(rs.getInt(13)),
+            toLocalDateTime(rs.getTimestamp(14)),
+            toLocalDateTime(rs.getTimestamp(15))
         );
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
