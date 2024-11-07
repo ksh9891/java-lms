@@ -9,7 +9,6 @@ import java.math.BigInteger;
 import java.time.LocalDate;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class SessionTest {
     private static final DateRange SESSION_DATE_RANGE = new DateRange(LocalDate.of(2024, 10, 1), LocalDate.of(2024, 10, 10));
@@ -59,11 +58,11 @@ public class SessionTest {
     void shouldThrowExceptionWhenNoSlotsAvailable() {
         final Session session = Session.paidSession(1L, 1L, SESSION_DATE_RANGE, SessionRecruiting.모집중, PAID_FEE, Capacity.of(2));
 
-        assertThrows(IllegalStateException.class, () -> {
+        assertThatThrownBy(() -> {
             session.apply(new NsUser(1L, "test001"), PAYMENT);
             session.apply(new NsUser(2L, "test002"), PAYMENT);
             session.apply(new NsUser(3L, "test003"), PAYMENT);
-        });
+        }).isInstanceOf(IllegalStateException.class);
     }
 
 

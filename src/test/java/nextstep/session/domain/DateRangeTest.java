@@ -1,14 +1,17 @@
 package nextstep.session.domain;
 
+import org.assertj.core.api.SoftAssertions;
+import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.time.LocalDate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
+@ExtendWith(SoftAssertionsExtension.class)
 public class DateRangeTest {
     @Test
     @DisplayName("시작일과 종료일 중 어느하나라도 설정되지 않은 경우 예외가 발생한다.")
@@ -51,17 +54,15 @@ public class DateRangeTest {
 
     @Test
     @DisplayName("기간 내의 날짜가 입력되지 않으면 false 를 반환한다.")
-    void shouldReturnFalseWhenDateIsNotWithinRange() {
+    void shouldReturnFalseWhenDateIsNotWithinRange(final SoftAssertions softly) {
         final LocalDate startDate = LocalDate.of(2024, 10, 1);
         final LocalDate endDate = LocalDate.of(2024, 10, 10);
         final DateRange dateRange = new DateRange(startDate, endDate);
         final LocalDate afterEndDate = LocalDate.of(2024, 10, 11);
         final LocalDate beforeStartDate = LocalDate.of(2024, 9, 30);
 
-        assertAll(
-            () -> assertThat(dateRange.isBetween(afterEndDate)).isFalse(),
-            () -> assertThat(dateRange.isBetween(beforeStartDate)).isFalse()
-        );
+        softly.assertThat(dateRange.isBetween(afterEndDate)).isFalse();
+        softly.assertThat(dateRange.isBetween(beforeStartDate)).isFalse();
     }
 
     @Test
