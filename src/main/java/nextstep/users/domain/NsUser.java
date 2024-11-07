@@ -121,6 +121,19 @@ public class NsUser {
                 email.equals(target.email);
     }
 
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final NsUser nsUser = (NsUser) o;
+        return Objects.equals(getId(), nsUser.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getId());
+    }
+
     public boolean isGuestUser() {
         return false;
     }

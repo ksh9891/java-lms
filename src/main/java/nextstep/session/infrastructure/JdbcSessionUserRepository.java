@@ -3,6 +3,7 @@ package nextstep.session.infrastructure;
 import nextstep.session.domain.SessionUser;
 import nextstep.session.domain.SessionUserRepository;
 import nextstep.session.domain.SessionUsers;
+import nextstep.users.domain.NsUser;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -35,7 +36,7 @@ public class JdbcSessionUserRepository implements SessionUserRepository {
         String sql = "select session_id, ns_user_id, created_at, updated_at from session_users where session_id = ?";
         RowMapper<SessionUser> rowMapper = (rs, rowNum) -> new SessionUser(
             rs.getLong(1),
-            rs.getLong(2),
+            new NsUser(rs.getLong(2)),
             toLocalDateTime(rs.getTimestamp(3)),
             toLocalDateTime(rs.getTimestamp(4))
         );
@@ -48,7 +49,7 @@ public class JdbcSessionUserRepository implements SessionUserRepository {
         String sql = "select session_id, ns_user_id, created_at, updated_at from session_users where session_id = ? and ns_user_id = ?";
         RowMapper<SessionUser> rowMapper = (rs, rowNum) -> new SessionUser(
             rs.getLong(1),
-            rs.getLong(2),
+            new NsUser(rs.getLong(2)),
             toLocalDateTime(rs.getTimestamp(3)),
             toLocalDateTime(rs.getTimestamp(4))
         );

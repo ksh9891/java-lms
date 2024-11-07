@@ -26,7 +26,7 @@ public class SessionUserRepositoryTest {
 
     @Test
     void crud() {
-        final SessionUser sessionUser = new SessionUser(1L, 1L);
+        final SessionUser sessionUser = new SessionUser(1L, new NsUser(1L));
         int count = sessionUserRepository.save(sessionUser);
         assertThat(count).isEqualTo(1);
         final SessionUser savedSessionUser = sessionUserRepository.findByIdAndUserId(1L, 1L);

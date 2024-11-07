@@ -1,30 +1,32 @@
 package nextstep.session.domain;
 
+import nextstep.users.domain.NsUser;
+
 import java.time.LocalDateTime;
 
 public class SessionUser {
     private final Long sessionId;
-    private final Long userId;
+    private final NsUser nsUser;
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
 
-    public SessionUser(final Long sessionId, final Long userId) {
-        this(sessionId, userId, LocalDateTime.now(), null);
+    public SessionUser(final Long sessionId, final NsUser nsUser) {
+        this(sessionId, nsUser, LocalDateTime.now(), null);
     }
 
-    public SessionUser(final Long sessionId, final Long userId, final LocalDateTime createdAt, final LocalDateTime updatedAt) {
+    public SessionUser(final Long sessionId, final NsUser nsUser, final LocalDateTime createdAt, final LocalDateTime updatedAt) {
         this.sessionId = sessionId;
-        this.userId = userId;
+        this.nsUser = nsUser;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
 
     public boolean matchSessionUser(final SessionUser sessionUser) {
-        return matchUser(sessionUser.userId) && matchSession(sessionUser.sessionId);
+        return matchUser(sessionUser.nsUser) && matchSession(sessionUser.sessionId);
     }
 
-    private boolean matchUser(final Long targetId) {
-        return userId.equals(targetId);
+    private boolean matchUser(final NsUser target) {
+        return nsUser.equals(target);
     }
 
     private boolean matchSession(final Long targetId) {
@@ -36,7 +38,7 @@ public class SessionUser {
     }
 
     public Long getUserId() {
-        return userId;
+        return nsUser.getId();
     }
 
     public LocalDateTime getCreatedAt() {

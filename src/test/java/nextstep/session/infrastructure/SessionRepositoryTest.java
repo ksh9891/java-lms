@@ -1,6 +1,7 @@
 package nextstep.session.infrastructure;
 
 import nextstep.session.domain.*;
+import nextstep.users.domain.NsUser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +20,12 @@ public class SessionRepositoryTest {
     private JdbcTemplate jdbcTemplate;
 
     private SessionRepository sessionRepository;
+    private SessionUserRepository sessionUserRepository;
 
     @BeforeEach
     void setUp() {
         sessionRepository = new JdbcSessionRepository(jdbcTemplate);
+        sessionUserRepository = new JdbcSessionUserRepository(jdbcTemplate);
     }
 
     @Test
@@ -48,6 +51,8 @@ public class SessionRepositoryTest {
             null
         );
         int count = sessionRepository.save(session);
+        final SessionUser sessionUser = new SessionUser(1L, new NsUser(1L));
+        sessionUserRepository.save(sessionUser);
         assertThat(count).isEqualTo(1);
         final Session savedSession = sessionRepository.findById(1L);
         assertThat(session.getSessionStatus()).isEqualTo(savedSession.getSessionStatus());

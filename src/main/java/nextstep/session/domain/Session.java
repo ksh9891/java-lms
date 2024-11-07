@@ -127,7 +127,7 @@ public class Session {
             throw new IllegalStateException("이미 신청되었습니다.");
         }
 
-        sessionUsers.add(new SessionUser(nsUser.getId(), this.id));
+        sessionUsers.add(new SessionUser(nsUser.getId(), nsUser));
     }
 
     private void validationPaidSession(final Payment payment) {
@@ -145,7 +145,7 @@ public class Session {
     }
 
     private boolean hasApplied(final NsUser nsUser) {
-        final SessionUser sessionUser = new SessionUser(nsUser.getId(), this.id);
+        final SessionUser sessionUser = new SessionUser(this.id, nsUser);
         return sessionUsers.contains(sessionUser);
     }
 
