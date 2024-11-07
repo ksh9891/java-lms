@@ -50,7 +50,7 @@ public class JdbcSessionRepository implements SessionRepository {
                 new ImageSize(rs.getLong(7))
             ),
             new DateRange(toLocalDate(rs.getTimestamp(8)), toLocalDate(rs.getTimestamp(9))),
-            SessionStatus.fromName(rs.getString(10)),
+            SessionRecruiting.fromName(rs.getString(10)),
             Money.of(rs.getBigDecimal(11).toBigInteger()),
             Capacity.of(rs.getInt(12)),
             toLocalDateTime(rs.getTimestamp(13)),

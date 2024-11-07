@@ -12,7 +12,7 @@ public class Session {
     private Long courseId;
     private SessionCoverImage sessionCoverImage;
     private DateRange sessionDateRange;
-    private SessionStatus sessionStatus;
+    private SessionRecruiting sessionRecruiting;
     private Money fee;
     private Capacity capacity;
     private SessionUsers sessionUsers;
@@ -26,31 +26,31 @@ public class Session {
     private Session(final Long id,
                     final Long courseId,
                     final DateRange sessionDateRange,
-                    final SessionStatus sessionStatus,
+                    final SessionRecruiting sessionRecruiting,
                     final Money fee,
                     final Capacity capacity
     ) {
-        this(id, courseId, null, sessionDateRange, sessionStatus, fee, capacity, LocalDateTime.now(), null);
+        this(id, courseId, null, sessionDateRange, sessionRecruiting, fee, capacity, LocalDateTime.now(), null);
     }
 
     public Session(final Long id,
                    final Long courseId,
                    final SessionCoverImage sessionCoverImage,
                    final DateRange sessionDateRange,
-                   final SessionStatus sessionStatus,
+                   final SessionRecruiting sessionRecruiting,
                    final Money fee,
                    final Capacity capacity,
                    final LocalDateTime createdAt,
                    final LocalDateTime updatedAt
     ) {
-        this(id, courseId, sessionCoverImage, sessionDateRange, sessionStatus, fee, capacity, new SessionUsers(), createdAt, updatedAt);
+        this(id, courseId, sessionCoverImage, sessionDateRange, sessionRecruiting, fee, capacity, new SessionUsers(), createdAt, updatedAt);
     }
 
     public Session(final Long id,
                    final Long courseId,
                    final SessionCoverImage sessionCoverImage,
                    final DateRange sessionDateRange,
-                   final SessionStatus sessionStatus,
+                   final SessionRecruiting sessionRecruiting,
                    final Money fee,
                    final Capacity capacity,
                    final SessionUsers sessionUsers,
@@ -63,7 +63,7 @@ public class Session {
         this.courseId = courseId;
         this.sessionCoverImage = sessionCoverImage;
         this.sessionDateRange = sessionDateRange;
-        this.sessionStatus = sessionStatus;
+        this.sessionRecruiting = sessionRecruiting;
         this.fee = fee;
         this.capacity = capacity;
         this.sessionUsers = sessionUsers;
@@ -84,19 +84,19 @@ public class Session {
     public static Session freeSession(final Long id,
                                       final Long courseId,
                                       final DateRange sessionDateRange,
-                                      final SessionStatus sessionStatus
+                                      final SessionRecruiting sessionRecruiting
     ) {
-        return new Session(id, courseId, sessionDateRange, sessionStatus, Money.of(BigInteger.ZERO), Capacity.noLimit());
+        return new Session(id, courseId, sessionDateRange, sessionRecruiting, Money.of(BigInteger.ZERO), Capacity.noLimit());
     }
 
     public static Session paidSession(final Long id,
                                       final Long courseId,
                                       final DateRange sessionDateRange,
-                                      final SessionStatus sessionStatus,
+                                      final SessionRecruiting sessionRecruiting,
                                       final Money fee,
                                       final Capacity capacity
     ) {
-        return new Session(id, courseId, sessionDateRange, sessionStatus, fee, capacity);
+        return new Session(id, courseId, sessionDateRange, sessionRecruiting, fee, capacity);
     }
 
     public void addSessionUsers(final SessionUsers sessionUsers) {
@@ -151,7 +151,7 @@ public class Session {
     }
 
     private boolean isRecruiting() {
-        return sessionStatus.isRecruit();
+        return sessionRecruiting.isRecruit();
     }
 
     private boolean isFree() {
@@ -167,7 +167,7 @@ public class Session {
     }
 
     public String getStatus() {
-        return sessionStatus.name();
+        return sessionRecruiting.name();
     }
 
     public Money getFee() {
