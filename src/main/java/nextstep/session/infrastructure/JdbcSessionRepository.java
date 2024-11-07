@@ -42,21 +42,21 @@ public class JdbcSessionRepository implements SessionRepository {
     public Session findById(final Long id) {
         String sql = "select id, course_id, cover_image_name, cover_image_extension, cover_image_width, cover_image_height, cover_image_size, start_date, end_date, session_status, recruit_status, fee, capacity, created_at, updated_at from session where id = ?";
         RowMapper<Session> rowMapper = (rs, rowNum) -> new Session(
-            rs.getLong(1),
-            rs.getLong(2),
+            rs.getLong("id"),
+            rs.getLong("course_id"),
             new SessionCoverImage(
-                rs.getString(3),
-                ImageExtension.supports(rs.getString(4)),
-                new ImageDimensions(rs.getInt(5), rs.getInt(6)),
-                new ImageSize(rs.getLong(7))
+                rs.getString("cover_image_name"),
+                ImageExtension.supports(rs.getString("cover_image_extension")),
+                new ImageDimensions(rs.getInt("cover_image_width"), rs.getInt("cover_image_height")),
+                new ImageSize(rs.getLong("cover_image_size"))
             ),
-            new DateRange(toLocalDate(rs.getTimestamp(8)), toLocalDate(rs.getTimestamp(9))),
-            SessionStatus.fromName(rs.getString(10)),
-            SessionRecruiting.fromName(rs.getString(11)),
-            Money.of(rs.getBigDecimal(12).toBigInteger()),
-            Capacity.of(rs.getInt(13)),
-            toLocalDateTime(rs.getTimestamp(14)),
-            toLocalDateTime(rs.getTimestamp(15))
+            new DateRange(toLocalDate(rs.getTimestamp("start_date")), toLocalDate(rs.getTimestamp("end_date"))),
+            SessionStatus.fromName(rs.getString("session_status")),
+            SessionRecruiting.fromName(rs.getString("recruit_status")),
+            Money.of(rs.getBigDecimal("fee").toBigInteger()),
+            Capacity.of(rs.getInt("capacity")),
+            toLocalDateTime(rs.getTimestamp("created_at")),
+            toLocalDateTime(rs.getTimestamp("updated_at"))
         );
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
