@@ -7,16 +7,18 @@ import java.time.LocalDateTime;
 public class SessionUser {
     private final Long sessionId;
     private final NsUser nsUser;
+    private final SessionRegistrationStatus status;
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
 
-    public SessionUser(final Long sessionId, final NsUser nsUser) {
-        this(sessionId, nsUser, LocalDateTime.now(), null);
+    public SessionUser(final Long sessionId, final NsUser nsUser, final SessionRegistrationStatus status) {
+        this(sessionId, nsUser, status, LocalDateTime.now(), null);
     }
 
-    public SessionUser(final Long sessionId, final NsUser nsUser, final LocalDateTime createdAt, final LocalDateTime updatedAt) {
+    public SessionUser(final Long sessionId, final NsUser nsUser, final SessionRegistrationStatus status, final LocalDateTime createdAt, final LocalDateTime updatedAt) {
         this.sessionId = sessionId;
         this.nsUser = nsUser;
+        this.status = status;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -41,11 +43,19 @@ public class SessionUser {
         return nsUser.getId();
     }
 
+    public SessionRegistrationStatus getStatus() {
+        return status;
+    }
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
+    }
+
+    public SessionUser changeStatus(final SessionRegistrationStatus status) {
+        return new SessionUser(sessionId, nsUser, status, createdAt, updatedAt);
     }
 }

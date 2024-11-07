@@ -48,7 +48,7 @@ public class SessionRepositoryTest {
         );
         int count = sessionRepository.save(session);
 
-        final SessionUser sessionUser = new SessionUser(1L, new NsUser(1L));
+        final SessionUser sessionUser = new SessionUser(1L, new NsUser(1L), SessionRegistrationStatus.승인대기);
         sessionUserRepository.save(sessionUser);
 
         final SessionCoverImage sessionCoverImage = new SessionCoverImage(

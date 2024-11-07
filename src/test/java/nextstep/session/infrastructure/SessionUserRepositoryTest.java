@@ -1,6 +1,6 @@
 package nextstep.session.infrastructure;
 
-import nextstep.session.domain.Session;
+import nextstep.session.domain.SessionRegistrationStatus;
 import nextstep.session.domain.SessionUser;
 import nextstep.session.domain.SessionUserRepository;
 import nextstep.users.domain.NsUser;
@@ -26,10 +26,13 @@ public class SessionUserRepositoryTest {
 
     @Test
     void crud() {
-        final SessionUser sessionUser = new SessionUser(1L, new NsUser(1L));
+        final SessionUser sessionUser = new SessionUser(1L, new NsUser(1L), SessionRegistrationStatus.승인대기);
         int count = sessionUserRepository.save(sessionUser);
         assertThat(count).isEqualTo(1);
         final SessionUser savedSessionUser = sessionUserRepository.findByIdAndUserId(1L, 1L);
         assertThat(sessionUser.getUserId()).isEqualTo(savedSessionUser.getUserId());
+        sessionUserRepository.updateStatus(savedSessionUser.changeStatus(SessionRegistrationStatus.미승인));
+        final SessionUser updatedSessionUser = sessionUserRepository.findByIdAndUserId(1L, 1L);
+        assertThat(updatedSessionUser.getStatus()).isEqualTo(SessionRegistrationStatus.미승인);
     }
 }

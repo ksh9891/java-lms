@@ -1,5 +1,6 @@
 package nextstep.session.infrastructure;
 
+import nextstep.session.domain.SessionRegistrationStatus;
 import nextstep.session.domain.SessionUser;
 import nextstep.session.domain.SessionUserRepository;
 import nextstep.session.domain.SessionUsers;
@@ -22,23 +23,25 @@ public class JdbcSessionUserRepository implements SessionUserRepository {
 
     @Override
     public int save(final SessionUser sessionUser) {
-        final String sql = "insert into session_users(session_id, ns_user_id, created_at) values(?, ?, ?)";
+        final String sql = "insert into session_users(session_id, ns_user_id, status, created_at) values(?, ?, ?, ?)";
         return jdbcTemplate.update(
             sql,
             sessionUser.getSessionId(),
             sessionUser.getUserId(),
+            sessionUser.getStatus().name(),
             sessionUser.getCreatedAt()
         );
     }
 
     @Override
     public SessionUsers findById(final Long sessionId) {
-        String sql = "select session_id, ns_user_id, created_at, updated_at from session_users where session_id = ?";
+        String sql = "select session_id, ns_user_id, status, created_at, updated_at from session_users where session_id = ?";
         RowMapper<SessionUser> rowMapper = (rs, rowNum) -> new SessionUser(
-            rs.getLong(1),
-            new NsUser(rs.getLong(2)),
-            toLocalDateTime(rs.getTimestamp(3)),
-            toLocalDateTime(rs.getTimestamp(4))
+            rs.getLong("session_id"),
+            new NsUser(rs.getLong("ns_user_id")),
+            SessionRegistrationStatus.fromName(rs.getString("status")),
+            toLocalDateTime(rs.getTimestamp("created_at")),
+            toLocalDateTime(rs.getTimestamp("updated_at"))
         );
         final List<SessionUser> sessionUser = jdbcTemplate.query(sql, rowMapper, sessionId);
         return new SessionUsers(sessionUser);
@@ -46,14 +49,21 @@ public class JdbcSessionUserRepository implements SessionUserRepository {
 
     @Override
     public SessionUser findByIdAndUserId(final Long sessionId, final Long userId) {
-        String sql = "select session_id, ns_user_id, created_at, updated_at from session_users where session_id = ? and ns_user_id = ?";
+        String sql = "select session_id, ns_user_id, status, created_at, updated_at from session_users where session_id = ? and ns_user_id = ?";
         RowMapper<SessionUser> rowMapper = (rs, rowNum) -> new SessionUser(
-            rs.getLong(1),
-            new NsUser(rs.getLong(2)),
-            toLocalDateTime(rs.getTimestamp(3)),
-            toLocalDateTime(rs.getTimestamp(4))
+            rs.getLong("session_id"),
+            new NsUser(rs.getLong("ns_user_id")),
+            SessionRegistrationStatus.fromName(rs.getString("status")),
+            toLocalDateTime(rs.getTimestamp("created_at")),
+            toLocalDateTime(rs.getTimestamp("updated_at"))
         );
         return jdbcTemplate.queryForObject(sql, rowMapper, sessionId, userId);
+    }
+
+    @Override
+    public int updateStatus(final SessionUser sessionUser) {
+        String sql = "update session_users set status = ?, updated_at = ? where session_id = ? and ns_user_id = ?";
+        return jdbcTemplate.update(sql, sessionUser.getStatus().name(), LocalDateTime.now(), sessionUser.getSessionId(), sessionUser.getUserId());
     }
 
     private LocalDateTime toLocalDateTime(Timestamp timestamp) {

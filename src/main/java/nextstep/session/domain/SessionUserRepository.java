@@ -6,4 +6,6 @@ public interface SessionUserRepository {
     SessionUsers findById(final Long sessionId);
 
     SessionUser findByIdAndUserId(final Long sessionId, final Long userId);
+
+    int updateStatus(final SessionUser sessionUser);
 }

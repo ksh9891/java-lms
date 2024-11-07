@@ -44,7 +44,7 @@ public class JdbcSessionRepository implements SessionRepository {
     public Session findById(final Long id) {
         String sql = "select s.id, s.course_id, s.start_date, s.end_date, s.session_status, s.recruit_status, s.fee, s.capacity, s.created_at, s.updated_at, " +
             "sci.cover_image_name, sci.cover_image_extension, sci.cover_image_width, sci.cover_image_height, sci.cover_image_size, sci.created_at as image_created_at, sci.updated_at as image_updated_at, " +
-            "su.session_id, su.ns_user_id, nu.user_id, su.created_at as session_users_created_at, su.updated_at as session_users_updated_at " +
+            "su.session_id, su.ns_user_id, su.status as session_users_status, nu.user_id, su.created_at as session_users_created_at, su.updated_at as session_users_updated_at " +
             "from session s " +
             "left join session_cover_image sci on s.id = sci.session_id " +
             "left join session_users su on s.id = su.session_id " +
@@ -84,6 +84,7 @@ public class JdbcSessionRepository implements SessionRepository {
         return (rs, rowNum) -> new SessionUser(
             rs.getLong("session_id"),
             new NsUser(rs.getLong("ns_user_id"), rs.getString("user_id")),
+            SessionRegistrationStatus.fromName(rs.getString("session_users_status")),
             toLocalDateTime(rs.getTimestamp("session_users_created_at")),
             toLocalDateTime(rs.getTimestamp("session_users_updated_at"))
         );
